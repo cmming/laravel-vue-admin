@@ -11,7 +11,7 @@
 					<input autocomplete="off" type="text" class="form-control" v-model="formData.email" placeholder="邮箱"
 						v-validate="'required|email'" name="email">
 					 <v-errorMsg 
-					:errorMsgAlert="{'isShow':errors.has('email'),'msg':[{'isShow':errors.has('email:required'),'msg':errors.first('email:required')}]}">
+					:errorMsgAlert="{'isShow':errors.has('email'),'msg':[{'isShow':errors.has('email:required'),'msg':errors.first('email:required')},{'isShow':errors.has('email:email'),'msg':errors.first('email:email')}]}">
 					</v-errorMsg> 
 				</div>
 				<div class="form-group col-lg-12">
@@ -83,6 +83,7 @@
 					allAjax.userData.login.call(this, resData, function (response) {
 						if(response.status == 200){
 							localStorage.token = response.data.data.token;
+							localStorage.userName = response.data.user.name;
 							self.$router.push('main');
 						}
 						// if (response.data.code === "200") {

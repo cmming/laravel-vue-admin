@@ -77,7 +77,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'zh',
 
     /*
     |--------------------------------------------------------------------------
@@ -180,6 +180,8 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         //jwt-auth 0.5.*
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        //composer require dingo/api:1.0.x@dev
+        Dingo\Api\Provider\LaravelServiceProvider::class
 
     ],
 

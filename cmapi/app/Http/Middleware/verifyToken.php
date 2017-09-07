@@ -8,7 +8,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
-class verifyToken
+class VerifyToken
 {
     /**
      * 请求前置中间件
@@ -28,7 +28,7 @@ class verifyToken
             }
         } catch (TokenExpiredException $e) {
             //toke失效，response code可自定义
-            return response()->json(['token 过期'], 405);
+            return response()->json(['token 过期'], 401);
         } catch (TokenInvalidException $e) {
             return response()->json(['token 非法'], $e->getStatusCode());
         } catch (JWTException $e) {

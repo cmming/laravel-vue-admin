@@ -48,14 +48,14 @@
                 childMenuShow: false,
                 // 菜单文件必要的配置 from 后台传来的目录数据
                 menuData: [{
-                    title: "联系人",
+                    title: "管理员管理",
                     iconFont: "fa-user",
                     childMenu: [{
-                        title: "联系人列表",
+                        title: "管理员信息",
                         path: "/users"
                     }, {
-                        title: "添加联系人",
-                        path: "/updateContact"
+                        title: "添加管理员",
+                        path: "/users/add"
                     },]
                 }, {
                     title: "文件",

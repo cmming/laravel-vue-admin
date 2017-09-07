@@ -32,7 +32,7 @@ return [
     | Defaults to 1 hour
     |
     */
-
+    //有效期
     'ttl' => 60,
 
     /*
@@ -46,7 +46,7 @@ return [
     | Defaults to 2 weeks
     |
     */
-
+    //刷新token时间（分钟）
     'refresh_ttl' => 20160,
 
     /*
@@ -60,7 +60,7 @@ return [
     | for possible values
     |
     */
-
+    //token签名算法
     'algo' => 'HS256',
 
     /*
@@ -72,7 +72,7 @@ return [
     | e.g. 'Acme\Entities\User'
     |
     */
-
+    //指向User模型的命名空间路径
     'user' => 'App\User',
 
     /*
@@ -84,7 +84,7 @@ return [
     | claim of the token payload.
     |
     */
-
+    //用于从token的sub中获取用户
     'identifier' => 'id',
 
     /*
@@ -97,7 +97,7 @@ return [
     | present in the payload.
     |
     */
-
+    //必须出现在token的payload中的选项，否则会抛出TokenInvalidException异常
     'required_claims' => ['iss', 'iat', 'exp', 'nbf', 'sub', 'jti'],
 
     /*
@@ -109,7 +109,7 @@ return [
     | If you do not want or need this functionality, then set this to false.
     |
     */
-
+    //如果该选项被设置为false，那么我们将不能废止token，即使我们刷新了token，前一个token仍然有效
     'blacklist_enabled' => env('JWT_BLACKLIST_ENABLED', true),
 
     /*
@@ -120,7 +120,7 @@ return [
     | Specify the various providers used throughout the package.
     |
     */
-
+    //完成各种任务的具体实现，如果需要的话你可以重写他们
     'providers' => [
 
         /*
@@ -132,7 +132,7 @@ return [
         | on the subject claim
         |
         */
-
+        //基于sub获取用户的实现
         'user' => 'Tymon\JWTAuth\Providers\User\EloquentUserAdapter',
 
         /*
@@ -143,7 +143,7 @@ return [
         | Specify the provider that is used to create and decode the tokens.
         |
         */
-
+        //加密/解密token
         'jwt' => 'Tymon\JWTAuth\Providers\JWT\NamshiAdapter',
 
         /*
@@ -154,7 +154,7 @@ return [
         | Specify the provider that is used to authenticate users.
         |
         */
-
+        //通过证书/ID获取认证用户
         'auth' => 'Tymon\JWTAuth\Providers\Auth\IlluminateAuthAdapter',
 
         /*
@@ -165,7 +165,7 @@ return [
         | Specify the provider that is used to store tokens in the blacklist
         |
         */
-
+        //存储token直到它们失效
         'storage' => 'Tymon\JWTAuth\Providers\Storage\IlluminateCacheAdapter',
 
     ],

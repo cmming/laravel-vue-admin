@@ -216,7 +216,7 @@
             },
             edit(index) {
                 if (index) {
-                    this.$router.push('/tableDetail/' + index);
+                    this.$router.push('/users/edit/' + index);
                 }
             }
         }

@@ -81,7 +81,6 @@
                                 <img src="" alt="" class="img-circle inline-block user-profile-pic">
                                 <div class="user-detail inline-block" @click="showRigthPc = !showRigthPc">
                                     {{userInfo.userName}}
-                                    123PC
                                     <i class="fa fa-angle-down"></i>
                                 </div>
                             </a>
@@ -145,11 +144,15 @@
             },
             // 退出登录
             siginOut:function(){
-                localStorage.removeItem('token');
-                localStorage.removeItem('refresh_expired_at');
-                localStorage.removeItem('userName');
-                // this.$store.dispatch('CLEARUSERINFO');
-                this.$router.push('./login');
+                allAjax.userData.logout.call(this, function (response) {
+                    if(response.status == 200){
+
+                        localStorage.removeItem('token');
+                        // this.$store.dispatch('CLEARUSERINFO');
+                        this.$router.push('./login');
+                    }
+                });
+                
             }
         }
     }
