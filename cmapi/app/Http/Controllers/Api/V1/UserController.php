@@ -70,4 +70,21 @@ class UserController extends BaseController
 
 		return $this->response->item($user, new UserTransformer());
 	}
+	//删除
+	public function destroy($id){
+
+		$validator = \Validator::make(['id'=>$id],[
+				'id'=>'numeric',
+		]);
+		if($validator->fails()){
+			return $this->errorBadRequest($validator);
+		}
+		$isExists = User::where('id','=',$id)->exists();
+		if($isExists){
+			User::destroy($id);
+		}
+
+		return $this->response->noContent();
+
+	}
 }

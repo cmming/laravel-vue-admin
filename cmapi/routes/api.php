@@ -85,11 +85,26 @@ $api->version('v1', [
             'uses' => 'UserController@store',
         ]);
         //删除一个用户
-        $api->delete('users', [
+        $api->delete('users/{user}', [
             //路由别名
             'as' => 'users.destroy',
             //
             'uses' => 'UserController@destroy',
         ]);
+
     });
+    //文件上传之前进行检测 分片
+    $api->get('upload', [
+        //路由别名
+        'as' => 'file.chunkNum',
+        //
+        'uses' => 'UploadController@chunkNum',
+    ]);
+    //文件上传
+    $api->post('upload', [
+        //路由别名
+        'as' => 'file.upload',
+        //
+        'uses' => 'UploadController@index',
+    ]);
 });
