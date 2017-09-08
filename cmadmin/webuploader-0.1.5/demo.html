@@ -7,7 +7,9 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <link rel="stylesheet" type="text/css" href="./dist/webuploader.css">
-  
+  <link rel="stylesheet" type="text/css" href="./dist/static/style.css">
+  <link rel="stylesheet" type="text/css" href="./jekyll/css/bootstrap-theme.min.css">
+
   <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
   <!--引入JS-->
   <script type="text/javascript" src="./dist/webuploader.js"></script>
@@ -16,20 +18,51 @@
 <body>
   <div id="uploader" class="wu-example">
     <!--用来存放文件信息-->
-    <div id="thelist" class="uploader-list"></div>
-    <div class="btns">
-      <div id="picker">选择文件</div>
-      <button id="ctlBtn" class="btn btn-default">开始上传   </button>
+    <div class="queueList">
+      <div id="dndArea" class="placeholder">
+        <div id="picker">点击选择文件</div>
+        <p>或将视频拖到这里，单次最多可选300个</p>
+      </div>
+    </div>
+    <div class="statusBar" style="display:none;">
+      <div class="progress">
+        <span class="text">0%</span>
+        <span class="percentage"></span>
+      </div>
+      <div class="info"></div>
+      <div class="btns">
+        <div id="filePicker2">继续添加</div>
+        <div class="uploadBtn">开始上传</div>
+      </div>
     </div>
   </div>
   <script>
     jQuery(function () {
-      $list = $('#thelist'),
-        $btn = $('#ctlBtn'),
-        state = 'pending',
-        uploader;
+      var $wrap = $('#uploader'),
+        // 图片容器
+        $queue = $('<ul class="filelist"></ul>')
+          .appendTo($wrap.find('.queueList')),
 
+        // 状态栏，包括进度和控制按钮
+        $statusBar = $wrap.find('.statusBar'),
+
+        // 文件总体选择信息。
+        $info = $statusBar.find('.info'),
+
+        // 上传按钮
+        $upload = $wrap.find('.uploadBtn'),
+
+        // 没选择文件之前的内容。
+        $placeHolder = $wrap.find('.placeholder'),
+
+        $progress = $statusBar.find('.progress').hide(),
+
+        // 可能有pedding, ready, uploading, confirm, done.
+        state = 'ready',
+
+        uploader;
       uploader = WebUploader.create({
+        // auto: false,
         // 不压缩image
         resize: false,
         // swf文件路径
@@ -39,17 +72,145 @@
         // 选择文件的按钮。可选。
         // 内部根据当前运行是创建，可能是input元素，也可能是flash.
         pick: '#picker',
+        // dnd: '#dndArea',
+        paste: '#uploader',
         chunked: true,
         chunkSize: 2 * 1024 * 1024,
-        auto: true,
+        //不自动上传
+        auto: false,
         accept: {
-          title: 'Images',
-        //   extensions: 'gif,jpg,jpeg,bmp,png,mp4',
-        //   mimeTypes: 'image/*'
+          title: 'Video',
+          //配置支持的文件类型
+          extensions: 'avi',
+          //让用户在选择文件的时候，只能选择 视频格式
+          mimeTypes: 'video/*'
         }
       });
-    });
 
+      // 添加“添加文件”的按钮，
+      uploader.addButton('#filePicker2');
+      //修改state 
+      function setState(val) {
+        var file, stats;
+
+        if (val === state) {
+          return;
+        }
+
+        // $upload.removeClass( 'state-' + state );
+        // $upload.addClass( 'state-' + val );
+        state = val;
+
+        switch (state) {
+          case 'pedding':
+            $placeHolder.show();
+            $queue.hide();
+            $statusBar.hide();
+            break;
+
+          case 'ready':
+            $placeHolder.hide();
+            $('#filePicker2').show();
+            $queue.show();
+            $statusBar.show();
+            break;
+
+          case 'uploading':
+            $('#filePicker2').hide();
+            $progress.show();
+            $upload.text('暂停上传');
+            break;
+
+          case 'paused':
+            $progress.show();
+            $upload.text('继续上传');
+            break;
+
+          case 'confirm':
+            $progress.hide();
+            $upload.text('开始上传').addClass('disabled');
+
+            stats = uploader.getStats();
+            if (stats.successNum && !stats.uploadFailNum) {
+              setState('finish');
+              return;
+            }
+            break;
+          case 'finish':
+            stats = uploader.getStats();
+            if (stats.successNum) {
+              alert('上传成功');
+            } else {
+              // 没有成功的图片，重设
+              state = 'done';
+              location.reload();
+            }
+            break;
+        }
+
+        updateStatus();
+      }
+
+      //为上传按钮 添加时间
+      $upload.on('click', function () {
+        console.log(1);
+        if ($(this).hasClass('disabled')) {
+          return false;
+        }
+
+        if (state === 'ready') {
+          uploader.upload();
+        } else if (state === 'paused') {
+          uploader.upload();
+        } else if (state === 'uploading') {
+          uploader.stop();
+        }
+      });
+
+      //上传队列等待中
+      uploader.on('fileQueued', function (file) {
+        $list.append('<div id="' + file.id + '" class="item">' +
+          '<h4 class="info">' + file.name + '</h4>' +
+          '<p class="state">等待上传...</p>' +
+          '</div>');
+      });
+
+
+      //上传过程中
+      uploader.on('uploadProgress', function (file, percentage) {
+        var $li = $('#' + file.id),
+          $percent = $li.find('.progress .progress-bar');
+
+        // 避免重复创建
+        if (!$percent.length) {
+          $percent = $('<div class="progress progress-striped active" >' +
+            '<div class="progress-bar" id="progress-bar" role="progressbar" style="height:10px;width:200px;margin-bottom: 30px;width: 0%;">' +
+            '</div>' +
+            '</div>').appendTo($li).find('.progress-bar');
+        }
+
+        $li.find('p.state').text('上传中');
+
+        $percent.css('width', percentage * 100 + '%');
+        $('#progress-bar').text(percentage * 100 + '%')
+      });
+
+      //上传成功
+      uploader.on('uploadSuccess', function (file) {
+        $('#' + file.id).find('p.state').text('已上传');
+      });
+      //上传错误
+      uploader.on('uploadError', function (file) {
+        $('#' + file.id).find('p.state').text('上传出错');
+      });
+      //上传完成
+      uploader.on('uploadComplete', function (file) {
+        $('#' + file.id).find('.progress').fadeOut();
+      });
+
+
+
+    });
   </script>
 </body>
 

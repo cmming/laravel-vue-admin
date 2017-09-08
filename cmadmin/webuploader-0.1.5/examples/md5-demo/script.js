@@ -11,7 +11,7 @@
         WebUploader.create({
             pick: '#filePicker'
         }).on('fileQueued', function( file ) {
-            var start =  +new Date();
+            var start =  new Date();
 
             // 返回的是 promise 对象
             this.md5File(file, 0, 1 * 1024 * 1024)
@@ -35,7 +35,7 @@
             swf: '../../dist/Uploader.swf',
             runtimeOrder: 'flash'
         }).on('fileQueued', function( file ) {
-            var start =  +new Date();
+            var start =  new Date();
 
             // 返回的是 promise 对象
             this.md5File(file, 0, 1 * 1024 * 1024)

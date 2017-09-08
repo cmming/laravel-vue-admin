@@ -18,7 +18,7 @@ if ( !empty($_REQUEST[ 'debug' ]) ) {
 
 // header("HTTP/1.0 500 Internal Server Error");
 // exit;
-// 5 minutes execution time
+// 最大执行时间为5分钟
 @set_time_limit(5 * 60);
 // Uncomment this one to fake upload time
 // usleep(5000);
@@ -27,12 +27,13 @@ if ( !empty($_REQUEST[ 'debug' ]) ) {
 $targetDir = __DIR__.'\uploads'.DIRECTORY_SEPARATOR.'file_material_tmp';
 $uploadDir = __DIR__.'\uploads'.DIRECTORY_SEPARATOR.'file_material';
 $cleanupTargetDir = true; // Remove old files
+//临时文件存在的最长时间
 $maxFileAge = 5 * 3600; // Temp file age in seconds
-// Create target dir
+// Create target dir 常见缓存目录
 if (!file_exists($targetDir)) {
  @mkdir($targetDir);
 }
-// Create target dir
+// Create target dir 创建目标文件夹
 if (!file_exists($uploadDir)) {
  @mkdir($uploadDir);
 }
@@ -44,20 +45,25 @@ if (isset($_REQUEST["name"])) {
 } else {
  $fileName = uniqid("file_");
 }
+//保存文件名字 便于后期存储 恢复文件名称
 $oldName = $fileName;
 $filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
 // $uploadPath = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
 // Chunking might be enabled
+//当前文件是第几片
 $chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
+//文件一共有几片
 $chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 1;
 // Remove old temp files
 if ($cleanupTargetDir) {
+    //文件夹打开失败
  if (!is_dir($targetDir) || !$dir = opendir($targetDir)) {
   die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
  }
  while (($file = readdir($dir)) !== false) {
   $tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
   // If temp file is current file proceed to the next
+  // filename+_0.parttmp
   if ($tmpfilePath == "{$filePath}_{$chunk}.part" || $tmpfilePath == "{$filePath}_{$chunk}.parttmp") {
    continue;
   }
@@ -86,6 +92,7 @@ if (!empty($_FILES)) {
   die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
  }
 }
+//将分片的文件进行 拼接
 while ($buff = fread($in, 4096)) {
  fwrite($out, $buff);
 }
@@ -130,9 +137,11 @@ if ( $done ) {
   'success'=>true,
   'oldName'=>$oldName,
   'filePaht'=>$uploadPath,
-  'fileSize'=>$data['size'],
+  'fileSize'=>$_REQUEST['size'],
   'fileSuffixes'=>$pathInfo['extension'],
-  'file_id'=>$data['id'],
+//   'file_id'=>$data['id'],
+  'file_id'=>$_REQUEST['id'],
+
   ];
 
  die(json_encode($response));
