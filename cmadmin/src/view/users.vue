@@ -18,7 +18,8 @@
                         </div>
                         <div class="col-md-4">
                             <span>搜索内容: </span>
-                            <el-autocomplete icon="search" v-model="searchData.mid" :fetch-suggestions="querySearchAsync" placeholder="请输入内容" @select="handleSelect" :on-icon-click="searchCal"></el-autocomplete>
+                            <el-autocomplete icon="search" v-model="searchData.mid" :fetch-suggestions="querySearchAsync" placeholder="请输入内容" @select="handleSelect"
+                                :on-icon-click="searchCal"></el-autocomplete>
                             <!--<button type="button" class="btn btn-success" @click="edit(chooseItem)">
                                 <i class="fa fa-search fa-fw"></i>
                                 搜索
@@ -117,8 +118,8 @@
                 searchData: { "page": '1', "btime": "", "etime": "", "paytype": "102", "mid": "" },
                 allPage: '',
                 curpage: 1,
-                restaurants:[]
-                
+                restaurants: []
+
             }
         },
         created() {
@@ -126,11 +127,11 @@
             this.restaurants = this.loadAll();
         },
         methods: {
-            searchCal(ev){
+            searchCal(ev) {
                 console.log(ev);
                 this.getData();
             },
-             loadAll() {
+            loadAll() {
                 return [
                     { "value": "三全鲜食（北新泾店）", "address": "长宁区新渔路144号" },
                     { "value": "Hot honey 首尔炸鸡（仙霞路）", "address": "上海市长宁区淞虹路661号" },
@@ -143,9 +144,9 @@
                 ];
             },
             // 异步搜索框  输入框的内容每次改变都会触发事件
-            querySearchAsync(queryString, cb){
+            querySearchAsync(queryString, cb) {
                 var restaurants = this.restaurants;
-                console.log(queryString,restaurants.filter(this.createStateFilter(queryString)));
+                console.log(queryString, restaurants.filter(this.createStateFilter(queryString)));
                 // 对返回值进行处理 （排序）
                 var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
                 cb(results);
@@ -158,11 +159,11 @@
             // 对返回值进行处理
             createStateFilter(queryString) {
                 return (state) => {
-                return (state.value.indexOf(queryString.toLowerCase()) === 0);
+                    return (state.value.indexOf(queryString.toLowerCase()) === 0);
                 };
             },
             // 选中一个元素的返回值
-            handleSelect(item){
+            handleSelect(item) {
                 console.log(item);
             },
             // 监视分页 点击事件
@@ -179,18 +180,18 @@
             },
             getData() {
                 var self = this;
-                var resData = 'page='+this.curpage;
+                var resData = 'page=' + this.curpage;
                 allAjax.users.userLisr.call(this, resData, function (response) {
-                    if(response.status == 200){
+                    if (response.status == 200) {
                         console.log(response.data.data);
                         self.dataList = response.data.data;
                         self.allPage = response.data.last_page;
 
-                    }else{
-                        self.allPage=0;
+                    } else {
+                        self.allPage = 0;
                         self.$message({
-                            type:"warning",
-                            message:response.data
+                            type: "warning",
+                            message: response.data
                         });
                     }
                 });
@@ -201,7 +202,19 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-
+                    var resData ={};
+                    resData._method = 'delete',self=this;
+                    allAjax.users.userDelete.call(this,'/users/'+ index,resData, function (response) {
+                        console.log(response.status);
+                        if (response.status == 204) {
+                            self.$message({
+                                type: "success",
+                                message: '用户信息删除成功！'
+                            });
+                            self.getData();
+                            // window.location.href = '#/users'
+                        }
+                    });
                     this.$message({
                         type: 'success',
                         message: '删除成功!'
@@ -229,7 +242,7 @@
         text-align: center;
         vertical-align: middle!important;
     }
-    
+
     .font-600 {
         padding: 10px 0;
     }

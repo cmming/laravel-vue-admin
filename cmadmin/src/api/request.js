@@ -65,6 +65,15 @@ const allAjax = {
             console.log(data);
             this.$http.post('/users',data).then(fn);
         },
+        /**
+         * 
+         * 删除一个用户
+         * @param {any} data 
+         * @param {any} fn 
+         */
+        userDelete(url,data,fn){
+            this.$http.post(url,data).then(fn);
+        },
     },
 
 };

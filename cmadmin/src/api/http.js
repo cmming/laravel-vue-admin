@@ -63,7 +63,7 @@ instance.interceptors.response.use(function (response) {
   // console.log(response.status);
   var reStatus = response.status;
   switch (reStatus) {
-    case 204:
+    case 401:
       localStorage.removeItem('token');
       window.location.href = '#/login';
       break;
