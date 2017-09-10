@@ -76,6 +76,13 @@ import 'font-awesome/css/font-awesome.min.css'
 import './assets/css/cm.css'
 
 
+
+// import './assets/dist/static/jquery'
+// import './assets/dist/webuploader'
+
+
+
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

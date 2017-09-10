@@ -1,11 +1,12 @@
-
 // 接口的一级目录
 import Vue from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import store from '../store'
 // 全局方法错误请求的方法
-import { Notification } from 'element-ui';
+import {
+  Notification
+} from 'element-ui';
 
 
 var instance = axios.create({
@@ -14,7 +15,9 @@ var instance = axios.create({
   // baseURL: '/api',
   // 规定所有的请求只有1s的等待
   timeout: 5000,
-  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
   // 对所有的请求数据统一转换为json字符串
   transformRequest: [function (data) {
     // 对 data 进行任意转换处理
@@ -79,12 +82,13 @@ instance.interceptors.response.use(function (response) {
   store.state.loading.loading = false;
   console.log(error.response.status);
   if (error.response.status) {
-  // if (0) {
+    // if (0) {
     var errorStatus = error.response.status;
     switch (errorStatus) {
       //token 过期
       case 401:
-        var now = 3, timer = null;
+        var now = 3,
+          timer = null;
         var showAlert = Notification.error({
           title: '错误',
           message: error.response.data + '，' + now + 's,即将跳转到登录页面，请重新登录',
@@ -105,21 +109,66 @@ instance.interceptors.response.use(function (response) {
             localStorage.removeItem('token');
             window.location.href = '#/login';
           }
-        }, 1000);
+        }, 3000);
         break;
       case 422:
         var errorMsg = '错误码：' + errorStatus;
         console.log(error.response.data.errors);
         if (error.response.data.errors) {
-          for(let i in error.response.data.errors){
-            errorMsg+=(error.response.data.errors[i]['field']+error.response.data.errors[i]['code']);
+          for (let i in error.response.data.errors) {
+            errorMsg += (error.response.data.errors[i]['field'] + error.response.data.errors[i]['code']);
           }
         }
         Notification.error({
           title: '错误',
           message: errorMsg,
           //不关闭弹框
-          duration: 0,
+          duration: 3000,
+          // customClass:""
+        });
+        break;
+      case 422:
+        var errorMsg = '错误码：' + errorStatus;
+        console.log(error.response.data.errors);
+        if (error.response.data.errors) {
+          for (let i in error.response.data.errors) {
+            errorMsg += (error.response.data.errors[i]['field'] + error.response.data.errors[i]['code']);
+          }
+        }
+        Notification.error({
+          title: '错误',
+          message: errorMsg,
+          //不关闭弹框
+          duration: 3000,
+          // customClass:""
+        });
+        break;
+      case 400:
+        var errorMsg = '错误码：' + errorStatus;
+        console.log(error.response.data);
+        Notification.error({
+          title: '错误',
+          message: error.response.data,
+          //不关闭弹框
+          duration: 3000,
+          // customClass:""
+        });
+        localStorage.removeItem('token');
+        window.location.href = '#/login';
+        break;
+      case 422:
+        var errorMsg = '错误码：' + errorStatus;
+        console.log(error.response.data.errors);
+        if (error.response.data.errors) {
+          for (let i in error.response.data.errors) {
+            errorMsg += (error.response.data.errors[i]['field'] + error.response.data.errors[i]['code']);
+          }
+        }
+        Notification.error({
+          title: '错误',
+          message: errorMsg,
+          //不关闭弹框
+          duration: 3000,
           // customClass:""
         });
         break;

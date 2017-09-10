@@ -62,7 +62,7 @@
                     iconFont: "fa fa-file",
                     childMenu: [{
                         title: "上传文件",
-                        path: "/addFile"
+                        path: "/files/add"
                     }, {
                         title: "文件列表",
                         path: "/updateContact"

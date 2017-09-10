@@ -5,7 +5,6 @@ import Router from 'vue-router'
 
 import axios from 'axios'
 
-import Hello from '@/components/Hello'
 
 Vue.use(Router)
 
@@ -46,6 +45,11 @@ const routes = [
         path: '/users/add',
         meta: { auth: true, title: "添加用户", },
         component: resolve => require(['../view/createUser.vue'], resolve)
+      },
+      {
+        path: '/files/add',
+        meta: { auth: true, title: "上传文件", },
+        component: resolve => require(['../view/uploadFile.vue'], resolve)
       }
     ]
   }
@@ -64,6 +68,7 @@ router.beforeEach(({ meta, path }, from, next) => {
   // 依据localStorage是否存在来判断用户是否登录
   // var { auth = true } = meta;
   var auth = meta.auth;
+  //后台应该 将过期时间传过来 也可以作为跳转的要求
   var isLogin = localStorage.getItem('token') ? Boolean(localStorage.getItem('token')) : false;
   // auth 表示需要验证的页面 isLogin表示验证通过的数据session 
   if (auth && !isLogin) {

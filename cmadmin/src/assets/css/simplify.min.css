@@ -94,7 +94,7 @@ ul {
     border-radius: 1px;
     -moz-border-radius: 1px;
     -webkit-border-radius: 1px;
-    height: 12px
+    /* height: 12px */
 }
 
 .progress.progress-sm {
@@ -451,7 +451,7 @@ a.list-group-item.active:hover {
     float: left;
     display: block;
     margin-right: 20px;
-    padding: 9px 0;
+    /* padding: 9px 0; */
     outline: 0
 }
 
