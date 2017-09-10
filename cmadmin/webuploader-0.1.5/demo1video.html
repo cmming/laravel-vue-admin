@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+  <style>
+  #audio_id{
+      width: 500px;
+      height: 500px;
+  }
+  </style>
+</head>
+
+
+<body>
+
+  <input type="file" id="file" onchange="onInputFileChange()">
+  <video id="audio_id" controls autoplay loop>Your browser can't support HTML5 Audio</video>
+  <script>
+    function onInputFileChange() {
+      var file = document.getElementById('file').files[0];
+      var url = URL.createObjectURL(file);
+      console.log(url);
+      document.getElementById("audio_id").src = url;
+    }
+
+  </script>
+</body>
+
+</html>

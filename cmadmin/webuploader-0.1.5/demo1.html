@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="renderer" content="webkit">
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="./dist/webuploader.css">
+  <link rel="stylesheet" type="text/css" href="./jekyll/css/bootstrap-theme.min.css">
+
+  <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
+  <!--引入JS-->
+  <script type="text/javascript" src="./dist/webuploader.js"></script>
+</head>
+
+<body>
+  <div id="uploader" class="wu-example">
+    <!--用来存放文件信息-->
+    <div id="thelist" class="uploader-list">
+
+
+    </div>
+    <div class="queueList">
+      <div id="dndArea" class="placeholder">
+        <!-- <div id="filePicker">点击选择文件</div> -->
+        <div id="picker">选择文件</div>
+        <p>或将视频拖到这里</p>
+      </div>
+    </div>
+
+    <button id="ctlBtn" class="btn btn-default">开始上传   </button>
+  </div>
+  <script>
+    jQuery(function () {
+      var $wrap = $('#uploader'),
+        $list = $('#thelist'),
+
+        $queue = $('<ul class="filelist"></ul>')
+        .appendTo($wrap.find('.queueList')),
+        state = 'ready',
+
+        // 所有文件的进度信息，key为file id
+        percentages = {},
+
+
+        // 状态栏，包括进度和控制按钮
+        $statusBar = $wrap.find('.statusBar'),
+
+        $progress = $statusBar.find('.progress').hide(),
+
+        uploader;
+      uploader = WebUploader.create({
+        dnd: '#dndArea',
+        // 不压缩image
+        resize: false,
+        // swf文件路径
+        swf: 'uploader.swf',
+        // 文件接收服务端。
+        // server: './upload.php',
+        server: 'http://127.0.0.1/laravel-vue-admin/cmapi/public/api/upload',
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#picker',
+        chunked: true,
+        chunkSize: 2 * 1024 * 1024,
+        auto: false,
+        accept: {
+          title: 'Images',
+          //   extensions: 'gif,jpg,jpeg,bmp,png,mp4',
+          //   mimeTypes: 'image/*'
+        }
+      });
+      $('#ctlBtn').on('click', function () {
+        if ($(this).hasClass('disabled')) {
+          return false;
+        }
+
+        if (state === 'ready') {
+          uploader.upload();
+
+        } else if (state === 'paused') {
+          uploader.upload();
+        } else if (state === 'uploading') {
+          uploader.stop();
+        }
+      });
+
+
+      uploader.on('fileQueued', function (file) {
+        $('#dndArea').hide();
+        console.log(file.source.ext);
+        $list.append('<div id="' + file.id + '" class="item">' +
+          '<h4 class="info">' + file.name + '</h4>' +
+          '<p class="state">等待上传...</p>' +
+          '</div>');
+
+          console.log(this);
+        // 返回的是 promise 对象
+        this.md5File(file, 0, 1 * 1024 * 1024)
+
+          // 可以用来监听进度
+          .progress(function (percentage) {
+            // console.log('Percentage:', percentage);
+          })
+          // 处理完成后触发
+          .then(function (ret) {
+            fileMd5 = ret;
+          });
+      });
+
+      uploader.onUploadBeforeSend = function (file, data) {
+        data.md5 = fileMd5;
+        data.ext = file.file.ext;
+      };
+
+
+      uploader.on('uploadProgress', function (file, percentage) {
+        console.log(file);
+        var $li = $('#' + file.id),
+          $percent = $li.find('.progress .progress-bar');
+
+        // 避免重复创建
+        if (!$percent.length) {
+          $percent = $('<div class="progress progress-striped active" >' +
+            '<div class="progress-bar" id="progress-bar" role="progressbar" style="padding:8px;width:200px;margin-bottom: 30px;width: 0%;">' +
+            '</div>' +
+            '</div>').appendTo($li).find('.progress-bar');
+        }
+
+        $li.find('p.state').text('上传中');
+
+        $percent.css('width', percentage * 100 + '%');
+        $('#progress-bar').text(percentage * 100 + '%')
+      });
+
+
+      //上传成功
+      uploader.on('uploadSuccess', function (file) {
+        $('#' + file.id).find('p.state').text('已上传');
+      });
+      //上传错误
+      uploader.on('uploadError', function (file) {
+        $('#' + file.id).find('p.state').text('上传出错');
+      });
+      //上传完成
+      uploader.on('uploadComplete', function (file) {
+        // $('#' + file.id).find('.progress').fadeOut();
+        // location.reload();
+      });
+
+
+
+
+    });
+
+  </script>
+</body>
+
+</html>
