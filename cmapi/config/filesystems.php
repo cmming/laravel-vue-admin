@@ -55,6 +55,15 @@ return [
             'visibility' => 'public',
         ],
 
+        'uploadsVideo' => [
+            'driver' => 'local',
+            'root' => storage_path('app/uploads/video'),
+        ],
+        'uploadsVideoTemp' => [
+            'driver' => 'local',
+            'root' => storage_path('app/uploads/videoTemp'),
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),

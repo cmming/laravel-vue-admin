@@ -107,4 +107,19 @@ $api->version('v1', [
         //
         'uses' => 'UploadController@index',
     ]);
+    //文件上传 检测 api
+    $api->post('uploadCheck', [
+        //路由别名
+        'as' => 'file.uploadCheck',
+        //
+        'uses' => 'UploadController@uploadCheck',
+    ]);
+    //mergeChunks
+    //合并请求的接口
+    $api->post('mergeChunks', [
+        //路由别名
+        'as' => 'file.mergeChunks',
+        //
+        'uses' => 'UploadController@mergeChunks',
+    ]);
 });
