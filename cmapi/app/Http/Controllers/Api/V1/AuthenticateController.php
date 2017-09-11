@@ -72,17 +72,11 @@ class AuthenticateController extends BaseController
         $attributes = [
             'email' => $email,
             'name' => $request->get('name'),
-            'password' => app('hash')->make($password),
+//            'password' => app('hash')->make($password),
+            'password' => md5($password),
         ];
         $user = User::create($attributes);
 
         return ['msg'=>'注册成功！','code'=>200];
-        // 用户注册成功后发送邮件
-//        dispatch(new SendRegisterEmail($user));
-
-        // 201 with location
-//        $location = dingo_route('v1', 'users.show', $user->id);
-
-        // 让user默认返回token数据
     }
 }
