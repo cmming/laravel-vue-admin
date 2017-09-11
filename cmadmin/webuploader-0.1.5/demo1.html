@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<!-- http://blog.csdn.net/chenxiaoyu_csdn/article/details/70847203 -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,19 +31,19 @@
     </div>
 
     <button id="ctlBtn" class="btn btn-default">开始上传   </button>
+    <button id="cancel" class="btn btn-default">移除   </button>
+    <button id="destroy" class="btn btn-default">destroy   </button>
   </div>
   <script>
     jQuery(function () {
+
       var $wrap = $('#uploader'),
         $list = $('#thelist'),
 
         $queue = $('<ul class="filelist"></ul>')
         .appendTo($wrap.find('.queueList')),
-        state = 'ready',
-
-        // 所有文件的进度信息，key为file id
-        percentages = {},
-
+        // state = 'ready',
+        state = 'pending',
 
         // 状态栏，包括进度和控制按钮
         $statusBar = $wrap.find('.statusBar'),
@@ -51,15 +51,93 @@
         $progress = $statusBar.find('.progress').hide(),
 
         uploader;
+
+      //监听分块上传过程中的三个时间点  
+      WebUploader.Uploader.register({  
+            "before-send-file":"beforeSendFile",  
+            "before-send":"beforeSend",  
+            "after-send-file":"afterSendFile",  
+        },{  
+            //时间点1：所有分块进行上传之前调用此函数  
+            beforeSendFile:function(file){  
+                var deferred = WebUploader.Deferred();  
+                //1、计算文件的唯一标记，用于断点续传  
+                (new WebUploader.Uploader()).md5File(file,0,10*1024*1024)  
+                    .progress(function(percentage){  
+                        $('.item').find("p.state").text("正在读取文件信息...");  
+                    })  
+                    .then(function(val){  
+                        fileMd5=val;  
+                        console.log(fileMd5);
+                        $('.item').find("p.state").text("成功获取文件信息...");  
+                        //获取文件信息后进入下一步  
+                        deferred.resolve();  
+                    });  
+                return deferred.promise();  
+            },  
+            //时间点2：如果有分块上传，则每个分块上传之前调用此函数  
+            beforeSend:function(block){  
+                var deferred = WebUploader.Deferred();  
+                  
+                $.ajax({  
+                    type:"POST",  
+                    url:"http://192.168.0.88/laravel/cmapi/public/api/uploadCheck",  
+                    data:{  
+                        //文件唯一标记  
+                        fileMd5:fileMd5,  
+                        //当前分块下标  
+                        chunk:block.chunk,  
+                        //当前分块大小  
+                        chunkSize:block.end-block.start  
+                    },  
+                    dataType:"json",  
+                    success:function(response){  
+                        if(!response.ifExist){  
+                            //分块存在，跳过  
+                            deferred.reject();  
+                        }else{  
+                            //分块不存在或不完整，重新发送该分块内容  
+                            deferred.resolve();  
+                        }  
+                    }  
+                });  
+                  
+                this.owner.options.formData.fileMd5 = fileMd5;  
+                deferred.resolve();  
+                return deferred.promise();  
+            },  
+            //时间点3：所有分块上传成功后调用此函数  
+            afterSendFile:function(file){  
+              console.log(file);
+                //如果分块上传成功，则通知后台合并分块  
+                $.ajax({  
+                    type:"POST",  
+                    url:"http://192.168.0.88/laravel/cmapi/public/api/mergeChunks",  
+                    data:{  
+                        fileMd5:fileMd5, 
+                        chunks:file.blocks.length, 
+                        ext:file.ext
+                    },  
+                    success:function(response){  
+                        alert("上传成功");  
+                        var path = "uploads/"+fileMd5+".mp4";  
+                        $("#item1").attr("src",path);  
+                    }  
+                });  
+            }  
+        }); 
+
+
+     
       uploader = WebUploader.create({
         dnd: '#dndArea',
         // 不压缩image
-        resize: false,
+        prepareNextFile: true,//上传当前分片时预处理下一分片  
         // swf文件路径
         swf: 'uploader.swf',
         // 文件接收服务端。
         // server: './upload.php',
-        server: 'http://127.0.0.1/laravel-vue-admin/cmapi/public/api/upload',
+        server: 'http://192.168.0.88/laravel/cmapi/public/api/upload',
         // 选择文件的按钮。可选。
         // 内部根据当前运行是创建，可能是input元素，也可能是flash.
         pick: '#picker',
@@ -68,7 +146,7 @@
         auto: false,
         accept: {
           title: 'Images',
-          //   extensions: 'gif,jpg,jpeg,bmp,png,mp4',
+            extensions: 'gif,jpg,jpeg,bmp,png,mp4,avi',
           //   mimeTypes: 'image/*'
         }
       });
@@ -77,13 +155,14 @@
           return false;
         }
 
-        if (state === 'ready') {
-          uploader.upload();
+        if (state === 'pending') {
 
+
+          uploader.upload();
         } else if (state === 'paused') {
           uploader.upload();
         } else if (state === 'uploading') {
-          uploader.stop();
+          uploader.stop(true);
         }
       });
 
@@ -96,7 +175,7 @@
           '<p class="state">等待上传...</p>' +
           '</div>');
 
-          console.log(this);
+          console.log(this,this.md5File);
         // 返回的是 promise 对象
         this.md5File(file, 0, 1 * 1024 * 1024)
 
@@ -108,6 +187,11 @@
           .then(function (ret) {
             fileMd5 = ret;
           });
+          var canclefile = file;
+        $('#cancel').on('click', function(file) {
+          console.log('cancel',canclefile,file);
+          uploader.removeFile(canclefile);
+        })
       });
 
       uploader.onUploadBeforeSend = function (file, data) {
@@ -117,7 +201,6 @@
 
 
       uploader.on('uploadProgress', function (file, percentage) {
-        console.log(file);
         var $li = $('#' + file.id),
           $percent = $li.find('.progress .progress-bar');
 
@@ -135,14 +218,31 @@
         $('#progress-bar').text(percentage * 100 + '%')
       });
 
-
-      //上传成功
+      //上传之前的错误触发
+      uploader.onError = function( code ) {
+            switch(code){
+              case 'Q_TYPE_DENIED':
+              alert( 'Eroor: ' + '文件格式错误' );
+              break;
+              case 'Q_EXCEED_SIZE_LIMIT':
+              alert( 'Eroor: ' + '文件格式超过最大值' );
+              break;
+              default:
+              break;
+            }
+            
+        };
+      // 当某个文件（分片）上传到服务端响应后 object file ret 服务端的相应值
+      uploader.on('uploadAccept',function(object ,ret ){
+        // console.log(object ,ret );
+      });
+      //上传成功 一个文件所有的分片都完成
       uploader.on('uploadSuccess', function (file) {
         $('#' + file.id).find('p.state').text('已上传');
       });
       //上传错误
       uploader.on('uploadError', function (file) {
-        $('#' + file.id).find('p.state').text('上传出错');
+        $('#' + file.id).find('p.state').text('上传出错,请检查网络连接!重新选择文件上传');
       });
       //上传完成
       uploader.on('uploadComplete', function (file) {
@@ -150,8 +250,10 @@
         // location.reload();
       });
 
-
-
+      $('#destroy').on('click',function(){
+        console.log(uploader.destroy);
+        uploader.destroy();
+      });
 
     });
 
