@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
         'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
 
         //自己根据 jwt 创建的中间件
-        'verifyToken' => 'App\Http\Middleware\VerifyToken'
+        'verifyToken' => 'App\Http\Middleware\VerifyToken',
+        'adminChangeMidleware'=>'App\Http\Middleware\AdminChangeMidleware'
     ];
 }

@@ -122,4 +122,18 @@ $api->version('v1', [
         //
         'uses' => 'UploadController@mergeChunks',
     ]);
+    $api->group(['middleware' => ['adminChangeMidleware']], function ($api){
+        $api->post('adminLogin', [
+            //路由别名
+            'as' => 'adminUserController.adminLogin',
+            //
+            'uses' => 'AdminUserController@login',
+        ]);
+        $api->post('adminRegister', [
+            //路由别名
+            'as' => 'adminUserController.adminRegister',
+            //
+            'uses' => 'AdminUserController@store',
+        ]);
+    });
 });
