@@ -57,13 +57,13 @@
                 <!--导航右边部分 三部分-->
                 <div class="nav-container">
                     <!--出现mini导航栏的触发按钮-->
-                    <button type="button" class="navbar-toggle pull-left sidebar-toggle" id="sidebarToggleLG">
+                    <!-- <button type="button" class="navbar-toggle pull-left sidebar-toggle" id="sidebarToggleLG">
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
-                    </button>
+                    </button> -->
                     <!--搜索按钮-->
-                    <ul class="nav-notification">
+                    <!-- <ul class="nav-notification">
                         <li class="search-list">
                             <div class="search-input-wrapper">
                                 <div class="search-input">
@@ -72,7 +72,7 @@
                                 </div>
                             </div>
                         </li>
-                    </ul>
+                    </ul> -->
                     <!--最右边的一列用户信息-->
                     <div class="pull-right m-right-sm">
                         <!--带用户头像的下拉-->

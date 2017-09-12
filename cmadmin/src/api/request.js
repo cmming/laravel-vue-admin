@@ -13,6 +13,15 @@ const allAjax = {
             this.$http.post('/login',data).then(fn);
         },
         /**
+         * admin登录接口
+         * 
+         * @param {json} data 发送的数据
+         * @param {Function} fn 接口的成功回调函数
+         */
+        adminLogin(data, fn) {
+            this.$http.post('/adminLogin',data).then(fn);
+        },
+        /**
          * 用户注册
          * 
          * @param {json} data 用户注册信息 

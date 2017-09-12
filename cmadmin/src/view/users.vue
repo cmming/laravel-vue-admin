@@ -183,9 +183,9 @@
                 var resData = 'page=' + this.curpage;
                 allAjax.users.userLisr.call(this, resData, function (response) {
                     if (response.status == 200) {
-                        console.log(response.data.data);
+                        console.log(response.data);
                         self.dataList = response.data.data;
-                        self.allPage = response.data.last_page;
+                        self.allPage = response.data.meta.pagination.total_pages;
 
                     } else {
                         self.allPage = 0;

@@ -66,7 +66,7 @@ instance.interceptors.response.use(function (response) {
   // console.log(response.status);
   var reStatus = response.status;
   switch (reStatus) {
-    case 401:
+    case 204:
       localStorage.removeItem('token');
       window.location.href = '#/login';
       break;
@@ -89,6 +89,7 @@ instance.interceptors.response.use(function (response) {
       case 401:
         var now = 3,
           timer = null;
+          localStorage.removeItem('token');
         var showAlert = Notification.error({
           title: '错误',
           message: error.response.data + '，' + now + 's,即将跳转到登录页面，请重新登录',
@@ -106,7 +107,6 @@ instance.interceptors.response.use(function (response) {
             clearInterval(timer);
             //关闭提示框
             showAlert.close();
-            localStorage.removeItem('token');
             window.location.href = '#/login';
           }
         }, 3000);

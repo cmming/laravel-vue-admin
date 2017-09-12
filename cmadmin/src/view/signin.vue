@@ -6,12 +6,20 @@
 			</div>
 
 			<form>
-				<div class="form-group col-lg-12 m-bottom-md">
+				<!-- <div class="form-group col-lg-12 m-bottom-md">
 					<i class="fa fa-user icon-absolute-left"></i>
 					<input autocomplete="off" type="text" class="form-control" v-model="formData.email" placeholder="邮箱"
 						v-validate="'required|email'" name="email">
 					 <v-errorMsg 
 					:errorMsgAlert="{'isShow':errors.has('email'),'msg':[{'isShow':errors.has('email:required'),'msg':errors.first('email:required')},{'isShow':errors.has('email:email'),'msg':errors.first('email:email')}]}">
+					</v-errorMsg> 
+				</div> -->
+				<div class="form-group col-lg-12 m-bottom-md">
+					<i class="fa fa-user icon-absolute-left"></i>
+					<input autocomplete="off" type="text" class="form-control" v-model="formData.name" placeholder="登录名"
+						v-validate="'required'" name="name">
+					 <v-errorMsg 
+					:errorMsgAlert="{'isShow':errors.has('name'),'msg':[{'isShow':errors.has('name:required'),'msg':errors.first('name:required')}]}">
 					</v-errorMsg> 
 				</div>
 				<div class="form-group col-lg-12">
@@ -65,6 +73,7 @@
 			return {
 				formData: {
 					email: "",
+					name: "",
 					password: "",
 				},
 				loadding: false,
@@ -80,10 +89,10 @@
 					console.log(resData);
 					this.loadding = true;
 					var self = this;
-					allAjax.userData.login.call(this, resData, function (response) {
+					allAjax.userData.adminLogin.call(this, resData, function (response) {
 						if(response.status == 200){
 							localStorage.token = response.data.data.token;
-							localStorage.userName = response.data.user.name;
+							localStorage.userName = response.data.user.uname;
 							self.$router.push('main');
 						}
 						// if (response.data.code === "200") {

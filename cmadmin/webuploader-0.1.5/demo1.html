@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- http://blog.csdn.net/chenxiaoyu_csdn/article/details/70847203 -->
+<!--  -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,6 +51,11 @@
         $progress = $statusBar.find('.progress').hide(),
 
         uploader;
+        $.ajaxSetup({
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem("token")
+            }
+        })
 
       //监听分块上传过程中的三个时间点  
       WebUploader.Uploader.register({  
@@ -62,7 +67,7 @@
             beforeSendFile:function(file){  
                 var deferred = WebUploader.Deferred();  
                 //1、计算文件的唯一标记，用于断点续传  
-                (new WebUploader.Uploader()).md5File(file,0,10*1024*1024)  
+                (new WebUploader.Uploader()).md5File(file,0,6*1024*1024*1024)  
                     .progress(function(percentage){  
                         $('.item').find("p.state").text("正在读取文件信息...");  
                     })  
@@ -81,6 +86,8 @@
                   
                 $.ajax({  
                     type:"POST",  
+                    cache: false,
+                    async: false,  // 同步
                     url:"http://192.168.0.88/laravel/cmapi/public/api/uploadCheck",  
                     data:{  
                         //文件唯一标记  
@@ -92,9 +99,11 @@
                     },  
                     dataType:"json",  
                     success:function(response){  
-                        if(!response.ifExist){  
+                      console.log(response,response.ifExist);
+                        if(response.ifExist){  
                             //分块存在，跳过  
                             deferred.reject();  
+                            
                         }else{  
                             //分块不存在或不完整，重新发送该分块内容  
                             deferred.resolve();  
@@ -129,10 +138,12 @@
 
 
      
-      uploader = WebUploader.create({
+        uploader = WebUploader.create({  
         dnd: '#dndArea',
         // 不压缩image
-        prepareNextFile: true,//上传当前分片时预处理下一分片  
+        prepareNextFile: true,//上传当前分片时预处理下一分片 
+        chunkRetry: 3,//如果某个分片由于网络问题出错，允许自动重传多少次  
+        threads: 3,//上传并发数。允许同时最大上传进程数[默认值：3]  
         // swf文件路径
         swf: 'uploader.swf',
         // 文件接收服务端。
@@ -156,12 +167,16 @@
         }
 
         if (state === 'pending') {
-
-
-          uploader.upload();
+          $(this).text('暂停上传');  
+          state = 'uploading';
+          uploader.upload(0);
         } else if (state === 'paused') {
-          uploader.upload();
+          state = 'uploading';
+          $(this).text('暂停上传'); 
+          uploader.upload(0);
         } else if (state === 'uploading') {
+          state = 'paused';
+          $(this).text('开始上传');  
           uploader.stop(true);
         }
       });
@@ -177,16 +192,17 @@
 
           console.log(this,this.md5File);
         // 返回的是 promise 对象
-        this.md5File(file, 0, 1 * 1024 * 1024)
+        // this.md5File(file, 0, 1 * 1024 * 1024)
 
-          // 可以用来监听进度
-          .progress(function (percentage) {
-            // console.log('Percentage:', percentage);
-          })
-          // 处理完成后触发
-          .then(function (ret) {
-            fileMd5 = ret;
-          });
+        //   // 可以用来监听进度
+        //   .progress(function (percentage) {
+        //     // console.log('Percentage:', percentage);
+        //   })
+        //   // 处理完成后触发
+        //   .then(function (ret) {
+        //     fileMd5 = ret;
+        //   });
+        // uploader.stop(true);
           var canclefile = file;
         $('#cancel').on('click', function(file) {
           console.log('cancel',canclefile,file);
@@ -194,7 +210,8 @@
         })
       });
 
-      uploader.onUploadBeforeSend = function (file, data) {
+      uploader.onUploadBeforeSend = function (file, data,headers) {
+        headers.Authorization = 'Bearer ' + localStorage.getItem("token");
         data.md5 = fileMd5;
         data.ext = file.file.ext;
       };
@@ -238,6 +255,8 @@
       });
       //上传成功 一个文件所有的分片都完成
       uploader.on('uploadSuccess', function (file) {
+        $('.progress .progress-bar').css('width',  100 + '%');
+        $('#progress-bar').text( 100 + '%')
         $('#' + file.id).find('p.state').text('已上传');
       });
       //上传错误
@@ -249,6 +268,24 @@
         // $('#' + file.id).find('.progress').fadeOut();
         // location.reload();
       });
+
+
+
+    //   uploader.on('all', function(type){  
+    //     if (type === 'startUpload'){  
+    //         state = 'uploading';  
+    //     }else if(type === 'stopUpload'){  
+    //         state = 'paused';  
+    //     }else if(type === 'uploadFinished'){  
+    //         state = 'done';  
+    //     }  
+  
+    //     if (state === 'uploading'){  
+    //         $('#ctlBtn').text('暂停上传');  
+    //     } else {  
+    //         $('#ctlBtn').text('开始上传');  
+    //     }  
+    // });   
 
       $('#destroy').on('click',function(){
         console.log(uploader.destroy);
