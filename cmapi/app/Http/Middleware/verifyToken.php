@@ -8,7 +8,9 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
-class VerifyToken
+use \Tymon\JWTAuth\Middleware\GetUserFromToken;
+
+class VerifyToken extends GetUserFromToken
 {
     /**
      * 请求前置中间件
@@ -22,6 +24,11 @@ class VerifyToken
         // 后期 根据这两个进行主动刷新token
         //$old_token = JWTAuth::getToken();
         //$token = JWTAuth::refresh($old_token);
+//		dd($this->auth->setRequest($request)->getToken());
+//		$token = $this->auth->setRequest($request)->getToken();
+//		//这一步有误
+//		$this->auth->authenticate($token);
+//		dd($this->auth->authenticate($token));
         try {
             if (!JWTAuth::parseToken()->authenticate()) {
                 return response()->json(['user_not_found'], 404);
@@ -39,5 +46,17 @@ class VerifyToken
 
         return $next($request);
     }
+
+	//解析token
+	public function authenticate($token = false)
+	{
+		$id = $this->getPayload($token)->get('sub');
+
+		if (! $this->auth->byId($id)) {
+			return false;
+		}
+
+		return $this->auth->user();
+	}
 }
 

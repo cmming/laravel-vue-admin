@@ -53,6 +53,21 @@ return [
             'strict' => true,
             'engine' => null,
         ],
+        //多数据库链接
+        'mysql_vr' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_CENTER', '127.0.0.1'),
+            'port' => env('DB_PORT_CENTER', '3306'),
+            'database' => env('DB_DATABASE_CENTER', 'forge'),
+            'username' => env('DB_USERNAME_CENTER', 'forge'),
+            'password' => env('DB_PASSWORD_CENTER', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
 
         'pgsql' => [
             'driver' => 'pgsql',

@@ -39,7 +39,7 @@ class UploadController extends BaseController
 			$save_file = $fileMd5.'.'.$fileType;
 			return $this->file_combine($filespath,$chunks,$save_file);
 		}else{
-			return ['id'=>$chunk,'msg'=>'ok'];
+			return ['id'=>$chunk,'msg'=>'ok','code'=>200];
 		}
 	}
 	//合并文件
@@ -162,6 +162,17 @@ class UploadController extends BaseController
 		$save_file = $fileMd5.'.'.$ext;
 		
 		return $this->file_combine($filespath,$chunks,$save_file);
+	}
+
+	public function selectProgressByfileMd5(Request $request)
+	{
+		$validator = \Validator::make($request->all(),[
+			'fileMd5'=>'required',
+		]);
+
+		if($validator->fails()){
+			return $this->errorBadRequest($validator);
+		}
 	}
 
 }

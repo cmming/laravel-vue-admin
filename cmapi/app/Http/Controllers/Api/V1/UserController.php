@@ -15,8 +15,11 @@ class UserController extends BaseController
 {
 	//获取用户的所有信息
 	public function index(){
-		$users = User::orderBy('created_at','desc')->paginate(10);
-		return $users;
+//		$users = User::orderBy('created_at','desc')->paginate(10);
+//		return $users;
+		$users = User::paginate();
+
+		return $this->response->paginator($users, new UserTransformer());
 	}
 	//获取一个用户的详情
 	public function show($id)
