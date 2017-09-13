@@ -14,7 +14,7 @@ class BaseModel extends Model
 	 * 3.      $hidden  转换成数组或 JSON 时，自动隐藏属性 例如密码
 	 */
 
-	protected $fillable = [];
+	protected $fillable = ['author_id','file_name','file_size','file_type','file_url'];
 	protected $hidden = ['ad_pwd'];
 
 }

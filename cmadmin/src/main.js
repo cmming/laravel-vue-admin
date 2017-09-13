@@ -44,6 +44,14 @@ import './validate/index.js'
 // 请求的拦截器
 import './api/index.js';
 
+import allAjax from './api/request.js'
+
+
+//视频插件
+require('video.js/dist/video-js.css')
+require('vue-video-player/src/custom-theme.css')
+import VueVideoPlayer from 'vue-video-player'
+Vue.use(VueVideoPlayer)
 
 
 // 数据状态集中处理

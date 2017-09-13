@@ -50,9 +50,7 @@ $api->version('v1', [
 	]);
 	//自定义jwt验证
 	$api->group(['middleware' => ['userChangeMidleware']], function ($api) {
-
 		$api->group(['middleware' => ['verifyToken']], function ($api) {
-//    $api->group(['middleware' => ['verifyToken','jwt.refresh']], function ($api){
 			//退出登录
 			$api->post('logout', [
 				//路由别名
@@ -132,6 +130,88 @@ $api->version('v1', [
 				//
 				'uses' => 'UploadController@mergeChunks',
 			]);
+			$api->post('checkIsUploaded', [
+				//路由别名
+				'as' => 'file.checkIsUploaded',
+				//
+				'uses' => 'UploadController@checkIsUploaded',
+			]);
+
+			//用户原创列表
+			$api->get('userOriTmps', [
+				//路由别名
+				'as' => 'userOriTmp.index',
+				//
+				'uses' => 'UserOriTmpController@index',
+			]);
+			//获取一个原创的详情
+			$api->get('userOriTmps/{userOriTmp}', [
+				//路由别名
+				'as' => 'userOriTmp.show',
+				//
+				'uses' => 'UserOriTmpController@show',
+			]);
+			//更新 一个用户原创的详情
+			$api->put('userOriTmps/{userOriTmp}', [
+				//路由别名
+				'as' => 'userOriTmp.update',
+				//
+				'uses' => 'UserOriTmpController@update',
+			]);
+			//添加一个用户原创
+			$api->post('userOriTmps', [
+				//路由别名
+				'as' => 'userOriTmp.store',
+				//
+				'uses' => 'UserOriTmpController@store',
+			]);
+			//删除一个用户原创
+			$api->delete('userOriTmps/{userOriTmp}', [
+				//路由别名
+				'as' => 'userOriTmp.destroy',
+				//
+				'uses' => 'UserOriTmpController@destroy',
+			]);
+
+
+			//用户资源列表
+			$api->get('userOriFiles', [
+				//路由别名
+				'as' => 'userOriFiles.index',
+				//
+				'uses' => 'UserOriFilesController@index',
+			]);
+			//获取一个原创的详情
+			$api->get('userOriFiles/{userOriFile}', [
+				//路由别名
+				'as' => 'userOriFiles.show',
+				//
+				'uses' => 'UserOriFilesController@show',
+			]);
+			//更新 一个用户原创的详情
+			$api->put('userOriFiles/{userOriFile}', [
+				//路由别名
+				'as' => 'userOriFiles.update',
+				//
+				'uses' => 'UserOriFilesController@update',
+			]);
+			//添加一个用户原创
+			$api->post('userOriFiles', [
+				//路由别名
+				'as' => 'userOriFiles.store',
+				//
+				'uses' => 'UserOriFilesController@store',
+			]);
+			//删除一个用户原创
+			$api->delete('userOriFiles/{userOriFile}', [
+				//路由别名
+				'as' => 'userOriFiles.destroy',
+				//
+				'uses' => 'UserOriFilesController@destroy',
+			]);
+
+
+
 		});
 
 	});

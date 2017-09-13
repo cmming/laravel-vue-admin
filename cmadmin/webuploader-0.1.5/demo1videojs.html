@@ -62,3 +62,16 @@ $('#pause').on('click',function(){
 </body>
 
 </html>
+
+@play="onPlayerPlay($event)"
+
+@ended="onPlayerEnded($event)"
+@waiting="onPlayerWaiting($event)"
+@playing="onPlayerPlaying($event)"
+@loadeddata="onPlayerLoadeddata($event)"
+@timeupdate="onPlayerTimeupdate($event)"
+@canplay="onPlayerCanplay($event)"
+@canplaythrough="onPlayerCanplaythrough($event)"
+
+@statechanged="playerStateChanged($event)"
+@ready="playerReadied"

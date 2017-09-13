@@ -32,6 +32,26 @@
 
 实现文件续传的接口
 
+上传完成后就能保存的数据
+
+1.创建用户资源表
+t_vr_user_ori_resources
+
+
+//上传完视频后可以修改的
+tid：2|4
+title：
+fname：
+ftype
+fsize
+authorid
+author：nick
+down_url:
+des:
+att:
+enable:
+vfrom:
+
 
 
 create table t_vr_user_ori_tmp (

@@ -112,7 +112,7 @@ instance.interceptors.response.use(function (response) {
         }, 3000);
         break;
       case 422:
-        var errorMsg = '错误码：' + errorStatus;
+        var errorMsg = '前台非法输入字符';
         console.log(error.response.data.errors);
         if (error.response.data.errors) {
           for (let i in error.response.data.errors) {
@@ -126,22 +126,7 @@ instance.interceptors.response.use(function (response) {
           duration: 3000,
           // customClass:""
         });
-        break;
-      case 422:
-        var errorMsg = '错误码：' + errorStatus;
-        console.log(error.response.data.errors);
-        if (error.response.data.errors) {
-          for (let i in error.response.data.errors) {
-            errorMsg += (error.response.data.errors[i]['field'] + error.response.data.errors[i]['code']);
-          }
-        }
-        Notification.error({
-          title: '错误',
-          message: errorMsg,
-          //不关闭弹框
-          duration: 3000,
-          // customClass:""
-        });
+        window.location.href = '#/422';
         break;
       case 400:
         var errorMsg = '错误码：' + errorStatus;

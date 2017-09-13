@@ -84,7 +84,104 @@ const allAjax = {
             this.$http.post(url,data).then(fn);
         },
     },
-
+     //用户资源模块
+     userOriFiles:{
+        /**
+         * 
+         * 获取资源的列表
+         * @param {any} data 
+         * @param {any} fn 
+         */
+        list(data,fn){
+            this.$http.get('/userOriFiles?'+data).then(fn);
+        },
+         /**
+         * 
+         * 一个用户原创的详情
+         * @param {any} data 
+         * @param {any} fn 
+         */
+        show(data,fn){
+            this.$http.get('/userOriFiles/'+data).then(fn);
+        },
+         /**
+         * 
+         * 更新一个用户原创
+         * @param {any} data 
+         * @param {any} fn 
+         */
+        update(url,data,fn){
+            this.$http.post(url,data).then(fn);
+        },
+         /**
+         * 
+         * 添加一个用户原创
+         * @param {any} data 
+         * @param {any} fn 
+         */
+        store(data,fn){
+            console.log(data);
+            this.$http.post('/userOriFiles',data).then(fn);
+        },
+        /**
+         * 
+         * 删除一个用户原创
+         * @param {any} data 
+         * @param {any} fn 
+         */
+        delete(data,fn){
+            this.$http.post('/userOriFiles/'+data,{_method:'delete'}).then(fn);
+        },
+    },
+    //用户原创模块
+    userOriTmps:{
+        /**
+         * 
+         * 获取原创的列表
+         * @param {any} data 
+         * @param {any} fn 
+         */
+        list(data,fn){
+            this.$http.get('/userOriTmps?'+data).then(fn);
+        },
+         /**
+         * 
+         * 一个用户原创的详情
+         * @param {any} data 
+         * @param {any} fn 
+         */
+        show(data,fn){
+            this.$http.get('/userOriTmps/'+data).then(fn);
+        },
+         /**
+         * 
+         * 更新一个用户原创
+         * @param {any} data 
+         * @param {any} fn 
+         */
+        update(url,data,fn){
+            this.$http.post(url,data).then(fn);
+        },
+         /**
+         * 
+         * 添加一个用户原创
+         * @param {any} data 
+         * @param {any} fn 
+         */
+        store(data,fn){
+            console.log(data);
+            this.$http.post('/users',data).then(fn);
+        },
+        /**
+         * 
+         * 删除一个用户原创
+         * @param {any} data 
+         * @param {any} fn 
+         */
+        delete(url,data,fn){
+            this.$http.post(url,data).then(fn);
+        },
+    },
 };
 
 export default allAjax;

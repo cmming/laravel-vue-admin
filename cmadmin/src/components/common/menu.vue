@@ -64,8 +64,8 @@
                         title: "上传文件",
                         path: "/files/add"
                     }, {
-                        title: "文件列表",
-                        path: "/updateContact"
+                        title: "用户原创文件列表",
+                        path: "/userOriFiles"
                     },]
                 }],
             }

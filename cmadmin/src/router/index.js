@@ -27,6 +27,11 @@ const routes = [
     component: resolve => require(['../view/mainIndex.vue'], resolve),
     children: [
       {
+        path: '/422',
+        meta: { auth: false, title: "非法输入" },
+        component: resolve => require(['../view/error422.vue'], resolve)
+      },
+      {
         path: '/main',
         meta: { auth: true, title: "消息列表", },
         component: resolve => require(['../view/main.vue'], resolve)
@@ -50,6 +55,21 @@ const routes = [
         path: '/files/add',
         meta: { auth: true, title: "上传文件", },
         component: resolve => require(['../view/uploadFile.vue'], resolve)
+      },
+      {
+        path: '/userOriFiles',
+        meta: { auth: true, title: "用户原创文件列表", },
+        component: resolve => require(['../view/userOriFiles.vue'], resolve)
+      },
+      {
+        path: '/UserOriFiles/add',
+        meta: { auth: true, title: "添加用户原创列表", },
+        component: resolve => require(['../view/UserOriTmpsForm.vue'], resolve)
+      },
+      {
+        path: '/UserOriFiles/add/:id',
+        meta: { auth: true, title: "添加原创申请", },
+        component: resolve => require(['../view/UserOriTmpsForm.vue'], resolve)
       }
     ]
   }
