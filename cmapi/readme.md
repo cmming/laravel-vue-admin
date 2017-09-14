@@ -42,15 +42,15 @@ t_vr_user_ori_resources
 tid：2|4
 title：
 fname：
-ftype
+des:{"fee":"2","free_time":"01`30"} 
+att:
+
+
+down_url:
 fsize
+ftype
 authorid
 author：nick
-down_url:
-des:
-att:
-enable:
-vfrom:
 
 
 
@@ -76,4 +76,12 @@ create table t_vr_user_ori_tmp (
  vfrom		   varchar(255) not null default '',		   -- 来源
  primary key(mid)
 );
+
+
+删除 发布资源的时候要将文件删除掉！！！
+
+文件上传后保存的路径应该是url !!
+
+
+视频上传 将暂停去掉（现在不稳定）
 
