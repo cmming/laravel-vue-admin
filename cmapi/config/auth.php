@@ -45,6 +45,11 @@ return [
             'driver' => 'token',
             'provider' => 'users',
         ],
+		//自定义一个 jwt 的门卫
+		'jwt' => [
+			'driver'   => 'jwt',   // 结合扩展这里定义即生效
+			'provider' => 'jwts'
+		]
     ],
 
     /*
@@ -68,12 +73,17 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+//            'model' =>  App\Models\User::class,
         ],
 
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+		'jwts' =>[
+			'driver' => 'eloquent',
+			'model' => App\Models\User::class,
+		]
     ],
 
     /*

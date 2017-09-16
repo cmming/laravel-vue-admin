@@ -8,6 +8,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\UserOriFiles;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Transformers\UserOriFilesTransformer;
 use JWTAuth;
@@ -16,9 +17,26 @@ class UserOriFilesController extends BaseController
 {
 	//获取用户的所有信息
 	public function index(){
+		//添加搜索条件
+		$search_arr = [];
+//		if(request('file_name')){
+//			$search_arr['file_name'] = request('file_name');
+//		}
+//		if(request('btime')){
+//			$search_arr['btime'] = request('btime');
+//		}
+//		if(request('etime')){
+//			$search_arr['etime'] = request('etime');
+//		}
+
 		$token = JWTAuth::getToken();
 		$id = JWTAuth::getPayload($token)->get('sub');
-		$UserOriTmp = UserOriFiles::where('author_id','=',$id)->paginate();
+		$search_arr['author_id'] = $id;
+		//多条件模糊查询
+		$UserOriTmp = UserOriFiles::where(function($query)use($id){
+			$query->where('file_name','like','%'.request('file_name').'%')->where('author_id','=',$id);
+		})->paginate();
+//		$UserOriTmp = UserOriFiles::where($search_arr)->paginate();
 		return $this->response->paginator($UserOriTmp, new UserOriFilesTransformer());
 	}
 	//获取一个用户的详情
@@ -103,8 +121,33 @@ class UserOriFilesController extends BaseController
 		$token = JWTAuth::getToken();
 		$id = JWTAuth::getPayload($token)->get('sub');
 
-		$attributes = ['author_id' => $id] + $resArr;
+		//获取用户的名字
+		$user_info = User::find($id)->toArray();
+
+		$attributes = ['author_id' => $id,'author'=>$user_info['nick']] + $resArr;
+
 		$user = UserOriFiles::create($attributes);
 		return $this->response->created();
+	}
+
+	public function update($id){
+		//侧路模式的权限判断
+
+//		$userOriFile = UserOriFiles::find($id)->author_id;
+//		$isok = $this->authorizeForUser(\Auth::user(),'update',$userOriFile);
+//		dd($isok);
+		$validator = \Validator::make(request(['file_name']),[
+			'file_name'=>'required|string',
+		]);
+		if($validator->fails()){
+			return $this->errorBadRequest($validator);
+		}
+		$userOriFiles =UserOriFiles::findOrFail($id);
+		$isUpdate = $userOriFiles->update(request(['file_name']));
+		if($isUpdate){
+			return $this->response->item($userOriFiles, new UserOriFilesTransformer());
+		}else{
+			return $this->response->errorNotFound();
+		}
 	}
 }

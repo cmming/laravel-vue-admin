@@ -1,0 +1,77 @@
+alter table t_user_att add lg_coin int(11) not null default '0' after extime;      -- 用户蓝光币[收益获得]
+alter table t_user_att add buy_lg_coin int(11) not null default '0' after lg_coin;      -- 用户蓝光币[购买获得]
+alter table t_user_att add income double(10,2) not null default '0' after buy_lg_coin;      -- 用户蓝光币[收益获得]
+
+-- 用户原创详情审核表
+create table t_vr_user_ori_tmp (
+ mid		   bigint not null auto_increment,	           -- 唯一流水号
+ tid		   int not null default '0',			   -- 类型编号【方便检索后定位处理】[1 普通图片 2 普通视频 3 VR全景图片 4 VR视频 5 官方贴]
+ title		   varchar(128) not null default '',		   -- 电影名称标题
+ fsign		   varchar(48) not null default '',		   -- 文件签名
+ fname		   varchar(128) not null default '',		   -- 文件名
+ ftype		   varchar(8) not null default '',		   -- 文件类型
+ fsize		   int not null default 0,			   -- 文件大小
+ authorid	   int not null default 0,			   -- 作者编号
+ author		   varchar(64) not null default '',		   -- 作者
+ flag		   int not null default '0',			   -- 标识位[用于排序 从大到小] 0 普通贴 1 精选
+ ctime		   timestamp default current_timestamp,		   -- 创建时间
+ img_url	   text,					   -- 图片地址
+ down_url	   text,					   -- 下载地址
+ des		   text,					   -- 电影介绍
+ tag		   text,					   -- 标签
+ att		   text,					   -- 额外配置属性 [ {"fee":"2","free_time":"01`30"} 说明：收费金额：2元 免费观看时长 1分30秒 ]
+ mtime		   int not null default 0,			   -- 修改时间[unix时间]
+ enable		   int not null default 0,			   -- 可用状态 （）
+ vfrom		   varchar(255) not null default '',		   -- 来源
+ primary key(mid)
+);
+
+-- 用户原创详情表
+create table t_vr_user_ori (
+ mid		   bigint not null auto_increment,	           -- 唯一流水号
+ tid		   int not null default '0',			   -- 类型编号【方便检索后定位处理】[1 普通图片 2 普通视频 3 VR全景图片 4 VR视频 5 官方贴]
+ title		   varchar(128) not null default '',		   -- 电影名称标题
+ fsign		   varchar(48) not null default '',		   -- 文件签名
+ fname		   varchar(128) not null default '',		   -- 文件名
+ ftype		   varchar(8) not null default '',		   -- 文件类型
+ fsize		   int not null default 0,			   -- 文件大小
+ authorid	   int not null default 0,			   -- 作者编号
+ author		   varchar(64) not null default '',		   -- 作者
+ flag		   int not null default '0',			   -- 标识位[用于排序 从大到小] 0 普通贴 1 精选
+ ctime		   timestamp default current_timestamp,		   -- 创建时间
+ img_url	   text,					   -- 图片地址
+ down_url	   text,					   -- 下载地址
+ des		   text,					   -- 电影介绍
+ tag		   text,					   -- 标签
+ att		   text,					   -- 额外配置属性 [ {"fee":"2","free_time":"01`30"} 说明：收费金额：2元 免费观看时长 1分30秒 ]
+ mtime		   int not null default 0,			   -- 修改时间[unix时间]
+ enable		   int not null default 0,			   -- 可用状态
+ vfrom		   varchar(255) not null default '',		   -- 来源
+ primary key(mid)
+);
+
+-- 用户原创对应表
+create table t_user_ori_relation (
+  id             bigint not null auto_increment,	           -- 唯一流水号
+  uid            int(11) not null default '0',                     -- 用户ID
+  mid            int(11) not null default '0',                     -- 原创资源ID
+  ctime          timestamp default current_timestamp,		   -- 创建时间
+  state          int(11) not null default '0',                     -- 状态 0 审核中 1 审核通过[发布] 2拒绝
+  primary key(id),
+  unique index(uid,mid)
+);
+
+-- 用户蓝光币收益详情表
+create table t_user_lg_coin_detail (
+ id             char(32) not null default '',                     -- 订单号
+ uid            int(11) not null default '0',                     -- 用户ID
+ mid            int(11) not null default '0',                     -- 原创资源ID
+ puid           int(11) not null default '0',                     -- 消费用户ID
+ ctime          timestamp default current_timestamp,		  -- 消费时间
+ nums           int(11) not null default '0',                     -- 收益蓝光币数目
+ money          double(10,2) not null default '0',                -- 收益金钱数目
+ primary key(id)
+);
+
+-- 提现相关  ---      下一步做
+

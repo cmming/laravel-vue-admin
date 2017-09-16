@@ -57,11 +57,13 @@ return [
 
         'uploadsVideo' => [
             'driver' => 'local',
-            'root' => storage_path('app/uploads/video'),
+             //'root' => storage_path('app/uploads/video') ,
+            'root' => env('USER_ORI_FILE_CACHE_PATH',storage_path('app/uploads')).'/video' ,
         ],
         'uploadsVideoTemp' => [
             'driver' => 'local',
-            'root' => storage_path('app/uploads/videoTemp'),
+            //'root' => storage_path('app/uploads/videoTemp'),
+			'root' => env('USER_ORI_FILE_CACHE_PATH',storage_path('app/uploads')).'/videoTemp' ,
         ],
 
         's3' => [
@@ -71,6 +73,14 @@ return [
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
+
+		//集成ftp
+		'ftp' => [
+			'dirver' => 'ftp',
+			'host' => env('ftp_host','ftp.example.com'),
+			'username' => env('ftp_user_name','your-username'),
+			'password' => env('ftp_user_pwd','your-password'),
+		],
 
     ],
 

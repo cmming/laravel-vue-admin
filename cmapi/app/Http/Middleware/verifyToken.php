@@ -25,6 +25,7 @@ class VerifyToken extends GetUserFromToken
         //$old_token = JWTAuth::getToken();
         //$token = JWTAuth::refresh($old_token);
 //		dd($this->auth->setRequest($request)->getToken());
+//		var_dump($this->auth->setRequest($request)->getToken());
 //		$token = $this->auth->setRequest($request)->getToken();
 //		//这一步有误
 //		$this->auth->authenticate($token);

@@ -78,10 +78,41 @@ create table t_vr_user_ori_tmp (
 );
 
 
-删除 发布资源的时候要将文件删除掉！！！
+删除 发布资源的时候要将文件删除掉！！！(1)
 
-文件上传后保存的路径应该是url !!
+文件上传后保存的路径应该是url !!(1)
+
+视频上传 将暂停去掉（现在不稳定）(1)
+
+接口的搜索条件(NO)
+
+制作测试接口(1)
 
 
-视频上传 将暂停去掉（现在不稳定）
+上线优化方式
+
+    1.生成配置文件缓存  php artisan config:cache  （针对config 中的配置文件，也生成bootstrap/cache/services.json用来优化服务加载器的性能. 这个命令不再编译视图文件.）
+    
+    2.将路由文件进行缓存 artisan route:cache
+    
+    3.php artisan optimize bootstrap/cache/compiled.php.（避免每次请求的时候把一系列的文件都）
+    
+    
+
+多条件模糊查询
+
+    A::where(function ($query) {
+        $query->where('a', 1)->where('b', 'like', '%123%');
+    })->orWhere(function ($query) {
+        $query->where('a', 1)->where('b', 'like', '%456%');
+    })->get();
+    
+    
+为所有的修改添加策略模式（让修改不会产生越权）
+
+    1.书写策略模式文件
+    2.注册策略模式
+    3.使用策略（controlle :中使用的规则：$this->authorize(policyName,changeModelName)） $this->authorize('update',$post);
+
+
 

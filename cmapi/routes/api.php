@@ -36,18 +36,6 @@ $api->version('v1', [
 	'namespace' => 'App\Http\Controllers\Api\V1',
 
 ], function ($api) {
-	$api->post('login', [
-		//路由别名
-		'as' => 'authorizations.login',
-		//
-		'uses' => 'AuthenticateController@login',
-	]);
-	$api->post('register', [
-		//路由别名
-		'as' => 'authorizations.register',
-		//
-		'uses' => 'AuthenticateController@store',
-	]);
 	//自定义jwt验证
 	$api->group(['middleware' => ['userChangeMidleware']], function ($api) {
 		$api->group(['middleware' => ['verifyToken']], function ($api) {
@@ -173,7 +161,6 @@ $api->version('v1', [
 				'uses' => 'UserOriTmpController@destroy',
 			]);
 
-
 			//用户资源列表
 			$api->get('userOriFiles', [
 				//路由别名
@@ -210,8 +197,6 @@ $api->version('v1', [
 				'uses' => 'UserOriFilesController@destroy',
 			]);
 
-
-
 		});
 
 	});
@@ -224,6 +209,13 @@ $api->version('v1', [
 			//
 			'uses' => 'AppUserController@login',
 		]);
+		$api->post('adminLogout', [
+			//路由别名
+			'as' => 'AppUserController.adminLogout',
+			//
+			'uses' => 'AppUserController@logout',
+		]);
+
 		$api->post('adminRegister', [
 			//路由别名
 			'as' => 'AppUserController.adminRegister',
@@ -231,4 +223,12 @@ $api->version('v1', [
 			'uses' => 'AppUserController@store',
 		]);
 	});
+
+	//测试接口 仅仅在开发环境能用
+	if (config('uploadFile.APP_ENV') == 'local') {
+		include_once "testApi.php";
+	}
+	//管理员的接口 在前端 增加 帐号类型 就能 将 admin 和 普通的 user 进行整合
+	//共用接口
+	include "commoneApi.php";
 });

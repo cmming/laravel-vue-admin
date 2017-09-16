@@ -45,4 +45,8 @@ class AppUserController extends BaseController
         ];
         return ['user'=>$user,'data'=>$tokenInfo];
     }
+
+	public function logout(){
+		return ['code'=>200,'msg'=>'退出登录'];
+	}
 }

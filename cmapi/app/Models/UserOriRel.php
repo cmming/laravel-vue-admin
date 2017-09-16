@@ -4,14 +4,10 @@ namespace App\Models;
 
 //use Illuminate\Database\Eloquent\Model;
 
-class UserOriTmp extends BaseModel
+class UserOriRel extends BaseModel
 {
     //
 	protected $connection = 'mysql_vr';
-	protected $table = "t_vr_user_ori_tmp";
-	protected $primaryKey = 'mid';
+	protected $table = "t_user_ori_relation";
 	public $timestamps = false;
-
-
-
 }

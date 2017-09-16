@@ -64,7 +64,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+//    'timezone' => 'UTC',
+    'timezone' => 'Asia/Shanghai',
 
     /*
     |--------------------------------------------------------------------------
@@ -119,9 +120,9 @@ return [
     | Available Settings: "single", "daily", "syslog", "errorlog"
     |
     */
-
+	//日志的类型
     'log' => env('APP_LOG', 'single'),
-
+	//错误等级
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
     /*
