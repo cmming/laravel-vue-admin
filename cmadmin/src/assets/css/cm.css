@@ -184,3 +184,8 @@ select.styled-select {
         width: 80%
     }
 }
+
+.search_time_title{
+    font-size: 18px;
+    vertical-align: sub;
+}

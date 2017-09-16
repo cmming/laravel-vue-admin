@@ -47,27 +47,32 @@
                 showIndex: '',
                 childMenuShow: false,
                 // 菜单文件必要的配置 from 后台传来的目录数据
-                menuData: [{
-                    title: "管理员管理",
-                    iconFont: "fa-user",
-                    childMenu: [{
-                        title: "管理员信息",
-                        path: "/users"
-                    }, {
-                        title: "添加管理员",
-                        path: "/users/add"
-                    },]
-                }, {
-                    title: "文件",
-                    iconFont: "fa fa-file",
-                    childMenu: [{
-                        title: "上传文件",
-                        path: "/files/add"
-                    }, {
-                        title: "用户原创文件列表",
-                        path: "/userOriFiles"
-                    },]
-                }],
+                menuData: [
+                    // {
+                    //     title: "管理员管理",
+                    //     iconFont: "fa-user",
+                    //     childMenu: [{
+                    //         title: "管理员信息",
+                    //         path: "/users"
+                    //     }, {
+                    //         title: "添加管理员",
+                    //         path: "/users/add"
+                    //     },]
+                    // },
+                    {
+                        title: "文件",
+                        iconFont: "fa fa-file",
+                        childMenu: [{
+                            title: "上传文件",
+                            path: "/files/add"
+                        }, {
+                            title: "用户原创文件列表",
+                            path: "/userOriFiles"
+                        }, {
+                            title: "用户原创申请",
+                            path: "/UserOriTmps"
+                        },]
+                    }],
             }
         },
         props: ['msg'],

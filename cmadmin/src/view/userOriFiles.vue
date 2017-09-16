@@ -2,34 +2,43 @@
     <div v-ansyimgpage="{'ansy':2000}">
         <v-breadcrumb :breadcrumbData="toBreadcrumb"></v-breadcrumb>
         <!--数据筛选区域-->
-        <div class="container bg-white padding-md">
+        <div class="container bg-white padding-lg">
             <div class="row">
-                <div class="col-md-1 col-sm-2 font-600">筛选区：</div>
+                <div class="col-md-1 col-sm-2 font-600" style="text-align:center">筛选区：</div>
                 <div class="col-md-11 col-sm-10 pull-left">
                     <div class="row">
-                        <div class="col-md-4 col-sm-12">
-                            <span>开始日期：</span>
-                            <el-date-picker type="date" placeholder="选择日期" v-model="searchData.btime"></el-date-picker>
-                        </div>
+                        <!-- <div class="col-md-2 col-sm-12">
+                        </div> -->
+                        <!-- <div class="col-md-6 col-sm-12">
+                            <span class = "search_time_title">创建时间：</span>
+                            <el-date-picker @change="setStartDate" type="date" placeholder="开始日期" v-model="searchData.btime"></el-date-picker>
 
-                        <div class="col-md-4 col-sm-12">
-                            <span>结束日期：</span>
-                            <el-date-picker type="date" placeholder="选择日期" v-model="searchData.etime"></el-date-picker>
+                            <el-date-picker @change="setEndDate" type="date" placeholder="结束日期" v-model="searchData.etime"></el-date-picker>
+                        </div> -->
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="文件名称" v-model="searchData.file_name">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-success no-shadow" tabindex="-1" @click="search">搜索</button>
+                                </div>
+                                <!-- /input-group-btn -->
+                            </div>
+                            <!-- /input-group -->
                         </div>
                     </div>
                 </div>
             </div>
             <!--数据操作区域-->
             <div class="m-top-xs row">
-                <div class="font-600 col-md-1 col-sm-2">操作区:</div>
+                <div class="font-600 col-md-1 col-sm-2" style="text-align:center">操作区:</div>
                 <div class="col-md-11 col-sm-10">
-                    <button type="button" class="btn btn-danger btn-sm" @click="del(chooseItem)"> 
+                    <!-- <button type="button" class="btn btn-danger btn-sm" @click="del(chooseItem)"> 
                         <i class="fa fa-trash-o fa-fw"></i>
                         删除
-                    </button>
-                    <button type="button" class="btn btn-success btn-sm" @click="show(chooseItem)">
+                    </button> -->
+                    <button type="button" class="btn btn-warning btn-sm" @click="edit(chooseItem)">
                         <i class="fa fa-check-circle-o fa-fw"></i>
-                        阅读
+                        修改
                     </button>
                     <button type="button" class="btn btn-success btn-sm" @click="addUserFilesStore(chooseItem)">
                         <i class="fa fa-check-circle-o fa-fw"></i>
@@ -39,7 +48,7 @@
             </div>
             <!--控制展示行-->
             <div class="m-top-xs row">
-                <div class="font-600 col-md-1 col-sm-12">控制列:</div>
+                <div class="font-600 col-md-1 col-sm-12" style="text-align:center;">控制列:</div>
                 <v-selectForShowCol class="inline-block col-md-11 col-sm-12" :tableHeader="tableHeader"></v-selectForShowCol>
             </div>
         </div>
@@ -65,7 +74,7 @@
                             </td>
                             <td v-show="tableHeader[0].val">{{item.id}}</td>
                             <td v-show="tableHeader[1].val">{{item.file_name}}</td>
-                            <td v-show="tableHeader[2].val">{{item.file_size}}</td>
+                            <td v-show="tableHeader[2].val">{{item.file_size|bytesToSize}}</td>
                             <td v-show="tableHeader[3].val">{{item.file_type}}</td>
                             <td v-show="tableHeader[4].val">{{item.file_url}}</td>
                         </tr>
@@ -85,7 +94,7 @@
     </div>
 </template>
 <script>
-    import allAjax from '../api/request.js' 
+    import allAjax from '../api/request.js'
     import { mapGetters, mapActions } from 'vuex'
     // 引入图片
     import testSrc from '../assets/images/img11.jpg'
@@ -108,7 +117,7 @@
                 ],
                 dataList: [],
                 chooseItem: '',
-                searchData: { "page": '1', "btime": "", "etime": "", "paytype": "102", "mid": "" },
+                searchData: { "file_name": '', "btime": "", "etime": "", "page": '1', },
                 allPage: '',
                 curpage: 1,
                 restaurants: []
@@ -161,7 +170,7 @@
                 }).then(() => {
                     // var resData ={};
                     // resData._method = 'delete',self=this;
-                    allAjax.userOriFiles.delete.call(this,index, function (response) {
+                    allAjax.userOriFiles.delete.call(this, index, function (response) {
                         console.log(response.status);
                         if (response.status == 204) {
                             self.$message({
@@ -185,16 +194,45 @@
 
             },
             //展示详情
-            show(index) {
-                // if (index) {
-                //     this.$router.push('/users/edit/' + index);
-                // }
+            edit(index) {
+                //使用模态框 显示
+                if (index) {
+                    this.$router.push('/UserOriFiles/edit/' + index);
+                }
+
             },
             //发布视频
-            addUserFilesStore(index){
+            addUserFilesStore(index) {
                 if (index) {
                     this.$router.push('/UserOriFiles/add/' + index);
                 }
+            },
+            //日期的格式化
+            setStartDate(val) {
+                this.searchData.btime = val;
+            },
+            setEndDate(val) {
+                this.searchData.etime = val;
+            },
+            //添加搜索
+            search() {
+
+                var resData = this.getDataFormat(this.searchData), self = this;
+
+                console.log(this.getDataFormat(this.searchData));
+                allAjax.userOriFiles.list.call(this, resData, function (response) {
+                    if (response.status == 200) {
+                        console.log(response.data);
+                        self.dataList = response.data.data;
+                        self.allPage = response.data.meta.pagination.total_pages;
+                    } else {
+                        self.allPage = 0;
+                        self.$message({
+                            type: "warning",
+                            message: response.data
+                        });
+                    }
+                });
             }
         }
     }

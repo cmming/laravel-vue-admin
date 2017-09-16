@@ -52,12 +52,17 @@ require('video.js/dist/video-js.css')
 require('vue-video-player/src/custom-theme.css')
 import VueVideoPlayer from 'vue-video-player'
 Vue.use(VueVideoPlayer)
-
+//自定义插件
+import plugins from './plugins/index'
+Vue.use(plugins);
 
 // 数据状态集中处理
 import store from './store'
 //已入一个自定义指令 （最终采用 模型方式）
 import directive from './directive/open.js'
+
+// 引入自定义的过滤器(最终也采用 模型方式 便于管理)
+import filters from './filter'
 
 // 自己定义的全局样式组件
 import deleteModel from './components/common/delete-weight.vue'

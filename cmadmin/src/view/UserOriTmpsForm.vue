@@ -10,21 +10,33 @@
                 </div>
                 <div class="smart-widget-inner">
                     <div class="smart-widget-body">
-                            <div class="row m-bottom-lg">
-                                <div class="col-lg-offset-2 col-lg-8">
-                                        <video-player  class="video-player-box"
-                                                        ref="videoPlayer"
-                                                        :options="playerOptions"
-                                                        customEventName="customstatechangedeventname"
-                                        
-                                                        
-                                                        @pause="onPlayerPause($event)"
-                                                        
-                                                        >
+
+                        <div class="modal fade" :class="{'show_block in':isShowVideo}" id="largeModal">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span @click="closeAndChoseModel" aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+                                        <h4 class="modal-title">视频选取免费时间</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- <div class="row m-bottom-lg">
+                                                <div class="col-lg-offset-2 col-lg-8"> -->
+                                        <video-player class="video-player-box" ref="videoPlayer" :options="playerOptions" customEventName="customstatechangedeventname"
+                                            @pause="onPlayerPause($event)">
                                         </video-player>
+                                        <!-- </div>
+                                            </div> -->
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal" @click="closeAndChoseModel">关闭</button>
+                                        <button type="button" class="btn btn-primary" @click="closeAndChoseModel">选中</button>
+                                    </div>
                                 </div>
                             </div>
-                            
+                        </div>
+
+
+
                         <!--为表单添加验证过滤-->
                         <form class="form-horizontal no-margin" @submit.prevent="validateBeforeSubmit">
                             <!-- <form class="form-horizontal no-margin"> -->
@@ -54,6 +66,30 @@
                             </div>
 
                             <div class="form-group">
+                                <label class="col-lg-2 control-label">是否分屏：</label>
+                                <div class="col-lg-10">
+                                    <div class="radio inline-block">
+                                        <div class="custom-radio m-right-xs">
+                                            <input type="radio" id="be_fp0" value="0" v-model="formData.att.be_fp" name="be_fp" v-validate="'required|in:0,1'">
+                                            <label for="be_fp0"></label>
+                                        </div>
+                                        <div class="inline-block vertical-top">分屏</div>
+                                    </div>
+                                    <div class="radio inline-block">
+                                        <div class="custom-radio m-right-xs">
+                                            <input type="radio" id="be_fp1" name="be_fp" value="1" v-model="formData.att.be_fp">
+                                            <label for="be_fp1"></label>
+                                        </div>
+                                        <div class="inline-block vertical-top">不分屏</div>
+                                    </div>
+
+                                    <v-errorMsg :errorMsgAlert="{'isShow':errors.has('tid'),'msg':[{'isShow':errors.has('tid'),'msg':errors.first('tid:required')}]}">
+                                    </v-errorMsg>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+
+                            <div class="form-group">
                                 <label class="control-label col-lg-2">资源标题：</label>
                                 <div :class="{'col-lg-6': true, 'has-error': (errors.has('title:required'))}">
                                     <input autocomplete="off" v-validate="'required'" type="text" class="form-control input-sm" placeholder="资源标题" name="title"
@@ -64,7 +100,7 @@
                                 <!-- /.col -->
                             </div>
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label class="control-label col-lg-2">文件的名称：</label>
                                 <div :class="{'col-lg-6': true, 'has-error': (errors.has('fname:required'))}">
                                     <input autocomplete="off" v-validate="'required'" type="text" class="form-control input-sm" placeholder="文件的名称" name="fname"
@@ -72,20 +108,45 @@
                                     <v-errorMsg :errorMsgAlert="{'isShow':errors.has('fname'),'msg':[{'isShow':errors.has('fname:required'),'msg':errors.first('fname:required')}]}">
                                     </v-errorMsg>
                                 </div>
-                                <!-- /.col -->
-                            </div>
+                            </div> -->
 
                             <div class="form-group">
                                 <label class="col-lg-2 control-label">资源介绍</label>
                                 <div :class="{'col-lg-6': true, 'has-error': (errors.has('des:required'))}">
-                                    <textarea v-validate="'required'" class="form-control" rows="3" name="des"
-                                    v-model="formData.des"></textarea>
+                                    <textarea v-validate="'required'" class="form-control" rows="3" name="des" v-model="formData.des"></textarea>
 
                                     <v-errorMsg :errorMsgAlert="{'isShow':errors.has('des'),'msg':[{'isShow':errors.has('des:required'),'msg':errors.first('des:required')}]}">
                                     </v-errorMsg>
                                 </div>
                                 <!-- /.col -->
                             </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">收费金额：</label>
+                                <div :class="{'col-lg-6': true, 'has-error': (errors.has('des:required'))}">
+                                    <input autocomplete="off" v-validate="'required|numeric'" type="text" class="form-control input-sm" placeholder="收费金额（单位：元）"
+                                        name="fee" v-model="formData.att.fee">
+
+                                    <v-errorMsg :errorMsgAlert="{'isShow':errors.has('fee'),'msg':[{'isShow':errors.has('fee:required'),'msg':errors.first('fee:required')},{'isShow':errors.has('fee:numeric'),'msg':errors.first('fee:numeric')}]}">
+                                    </v-errorMsg>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">免费观看时间：</label>
+                                <div :class="{'col-lg-4': true, 'has-error': (errors.has('des:required'))}">
+                                    <input autocomplete="off" v-validate="'required'" type="text" class="form-control input-sm" placeholder="免费观看时间" name="free_time"
+                                        v-model="formData.att.free_time" disabled>
+                                    <v-errorMsg :errorMsgAlert="{'isShow':errors.has('free_time'),'msg':[{'isShow':errors.has('free_time:required'),'msg':errors.first('free_time:required')}]}">
+                                    </v-errorMsg>
+                                </div>
+                                <div class="col-lg-2">
+                                    <button type="button" class="btn btn-success" @click="isShowVideo=true">请选择视频时间</button>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+
                             <!-- /form-group -->
                             <div class="form-group">
                                 <div class="text-center m-top-md col-lg-9">
@@ -106,14 +167,13 @@
 </template>
 
 <style>
-    .video-player.video-player-box>div{
-        width:auto;
+    .video-player.video-player-box>div {
+        width: auto;
     }
-    .vjs-big-play-button{
+
+    .vjs-big-play-button {
         display: none !important;
     }
-
-
 </style>
 
 <script>
@@ -131,13 +191,15 @@
                 //isUpdate 
                 isUpdate: 0,
                 formData: {
+                    "vid": this.$route.params.id,
                     "tid": "",
                     "title": "",
-                    "fname": "",
+                    // "fname": "",
                     "des": "",
-                    "att":{
-                        "fee":"",
-                        "free_time":""
+                    "att": {
+                        "fee": "",
+                        "free_time": "",
+                        "be_fp": ""
                     }
                 },
                 //视频播放参数
@@ -147,10 +209,11 @@
                     playbackRates: [0.7, 1.0, 1.5, 2.0],
                     sources: [{
                         type: "video/mp4",
-                        src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
+                        src: ""
                     }],
                     // poster: "/static/images/author.jpg",
-                }
+                },
+                isShowVideo: false,
 
             }
         },
@@ -168,24 +231,30 @@
                 var self = this;
                 var resData = this.$route.params.id, self = this;
                 allAjax.userOriFiles.show.call(this, resData, function (response) {
-                    console.log(response);
+                    // console.log(response);
                     if (response.status == 200) {
-                        self.formData.name = response.data.data.name;
-                        self.formData.email = response.data.data.email;
+                        // self.formData.fname = response.data.data.file_name;
+                        self.playerOptions.sources[0].src = response.data.data.file_url;
                     }
                 });
 
-            } else if (route_path.indexOf('/UserOriFiles/edit/') != -1 && (this.$route.params.id)) {
+            } else if (route_path.indexOf('/UserOriTmps/edit') != -1 && (this.$route.params.id)) {
                 this.isUpdate = true;
                 //查询 该用户 同时显示在页面上
                 var resData = this.$route.params.id, self = this;
-                allAjax.users.userShow.call(this, resData, function (response) {
-                    console.log(response);
+                allAjax.userOriTmps.show.call(this, resData, function (response) {
+                    // console.log(response);
                     if (response.status == 200) {
-                        self.formData.name = response.data.data.name;
-                        self.formData.email = response.data.data.email;
-                    } else if (response.data.code == 201) {
-                        this.$route.push('userOriFiles');
+                        self.formData.tid = response.data.data.tid;
+                        self.formData.title = response.data.data.title;
+                        self.formData.des = response.data.data.des;
+                        // self.formData.fname = response.data.data.fname;
+                        let att = JSON.parse(response.data.data.att);
+                        self.formData.att.fee = att.fee;
+                        self.formData.att.free_time = att.free_time;
+                        self.formData.att.be_fp = att.be_fp;
+                        // self.formData.att = response.data.data.att;
+                        self.playerOptions.sources[0].src = response.data.data.down_url;
                     }
                 });
             } else {
@@ -193,19 +262,12 @@
             }
         },
         mounted() {
-           
+
             // console.log('this is current player instance object', this.player)
             setTimeout(() => {
                 // console.log('dynamic change options', this.player)
                 this.player.muted(false)
-                console.log($('.vjs-styles-dimensions'));
             }, 2000);
-            this.$nextTick(function(){
-                console.log($('.vjs-styles-dimensions'));
-                // $('.vjs-styles-defaults').remove();
-                // $('.vjs-styles-dimensions').remove();
-                // console.log($('.vjs-styles-dimensions'));
-            });
         },
 
         computed: {
@@ -221,40 +283,52 @@
                         if (result) {
                             var resData = this.formData;
                             var self = this;
-                            allAjax.users.userStore.call(this, resData, function (response) {
-                                console.log(response.status);
+                            allAjax.userOriTmps.store.call(this, resData, function (response) {
+                                // console.log(response.status,response);
                                 if (response.status == 201) {
                                     self.$message({
                                         type: "success",
-                                        message: '创建用户成功！'
+                                        message: '资源申请成功成功！'
                                     });
-                                    window.location.href = '#/users'
+                                    window.location.href = '#/UserOriTmps'
                                 }
                             });
                             return;
                         }
-                        alert('未通过');
+                        self.$message({
+                            type: "error",
+                            message: '请按照要求填写表单'
+                        });
                     });
                 } else {
                     //修改
                     this.$validator.validateAll().then((result) => {
                         if (result) {
+                            // console.log(this.formData);
                             var resData = this.formData;
                             resData._method = 'put';
                             var self = this;
-                            allAjax.users.userUpdate.call(this, '/users/' + this.$route.params.id, resData, function (response) {
-                                console.log(response.status);
-                                if (response.status == 200) {
+                            allAjax.userOriTmps.update.call(this, this.$route.params.id, resData, function (response) {
+                                // console.log(response);
+                                if (response.data.code == 200) {
                                     self.$message({
                                         type: "success",
-                                        message: '用户信息修改成功！'
+                                        message: '信息修改成功！'
                                     });
-                                    window.location.href = '#/users'
+                                    window.location.href = '#/UserOriTmps'
+                                }else{
+                                    self.$message({
+                                        type: "error",
+                                        message: '信息修改失败！'
+                                    });
                                 }
                             });
                             return;
                         }
-                        alert('未通过');
+                        self.$message({
+                            type: "error",
+                            message: '请按照要求填写表单'
+                        });
                     });
                 }
 
@@ -262,8 +336,22 @@
             //视频暂停
             onPlayerPause(player) {
                 // console.log('player pause!', player)
-                console.log(player,player.currentTime());
+                // console.log(player, player.currentTime());
             },
+            closeAndChoseModel() {
+                //暂停视屏
+                this.player.pause();
+                //让用户确认是否选择当前时间为免费时间
+                // console.log(this.player, this.player.currentTime());
+                this.formData.att.free_time = this.formatSeconds(this.player.currentTime());
+
+                //关闭弹框
+                this.isShowVideo = false;
+                //将时间自动填到后面去
+
+                //关闭弹窗
+                this.isShowVideo = false;
+            }
         },
     }
 

@@ -25,7 +25,12 @@ var instance = axios.create({
     // return until.serializeObject(data);
     let ret = ''
     for (let it in data) {
-      ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      var obj =data[it];
+      if(!(typeof(obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() == "[object object]" && !obj.length)){
+        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      }else{
+        ret += encodeURIComponent(it) + '=' + JSON.stringify(data[it]) + '&'
+      }
     }
     return ret
     // return data;
@@ -66,7 +71,7 @@ instance.interceptors.response.use(function (response) {
   // console.log(response.status);
   var reStatus = response.status;
   switch (reStatus) {
-    case 204:
+    case 2041:
       localStorage.removeItem('token');
       window.location.href = '#/login';
       break;

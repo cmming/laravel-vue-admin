@@ -15,17 +15,22 @@
                             <span class="badge badge-danger bounceIn">1</span>
                             <ul class="dropdown-menu dropdown-sm pull-right user-dropdown">
                                 <li class="user-avatar">
-                                    <img src="" alt="" class="img-circle">
+                                    <!-- <img src="" alt="" class="img-circle"> -->
                                     <div class="user-content">
                                         <h5 class="no-m-bottom">{{userInfo.userName}}</h5>
                                         <div class="m-top-xs">
-                                            <a href="profile.html" class="m-right-sm">Profile</a>
+                                            <!-- <a href="javascript:void(0)" class="m-right-sm">Profile</a> -->
                                             <a @click="siginOut">退出</a>
                                         </div>
                                     </div>
                                 </li>
-                                <li>
-                                    <a href="inbox.html">
+                                <!-- <li>
+                                    <a @click="siginOut">
+                                        <i class="fa fa-power-off fa-lg"></i><span class="m-left-xs">登出</span>
+                                    </a>
+                                </li> -->
+                                <!-- <li>
+                                    <a href="javascript:void(0)">
                                     Inbox
                                     <span class="badge badge-danger bounceIn animation-delay2 pull-right">1</span>
                                 </a>
@@ -45,12 +50,12 @@
                                 <li class="divider"></li>
                                 <li>
                                     <a href="javascript:void(0)">Setting</a>
-                                </li>
+                                </li> -->
                             </ul>
                         </li>
                     </ul>
                     <!--在pc上显示-->
-                    <a href="index.html" class="brand">
+                    <a href="javascript:void(0)" class="brand">
                         <i class="fa fa-database"></i><span class="brand-name">蓝光vr</span>
                     </a>
                 </div>
@@ -144,7 +149,11 @@
             },
             // 退出登录
             siginOut:function(){
+                localStorage.removeItem('token');
+                        // this.$store.dispatch('CLEARUSERINFO');
+                this.$router.push('./login');
                 allAjax.userData.logout.call(this, function (response) {
+                    console.log(response.data);
                     if(response.status == 200){
 
                         localStorage.removeItem('token');

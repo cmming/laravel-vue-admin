@@ -33,24 +33,24 @@ const routes = [
       },
       {
         path: '/main',
-        meta: { auth: true, title: "消息列表", },
+        meta: { auth: true, title: "主页", },
         component: resolve => require(['../view/main.vue'], resolve)
       },
-      {
-        path: '/users',
-        meta: { auth: true, title: "用户列表", },
-        component: resolve => require(['../view/users.vue'], resolve)
-      },
-      {
-        path: '/users/edit/:id',
-        meta: { auth: true, title: "修改用户信息", },
-        component: resolve => require(['../view/createUser.vue'], resolve)
-      },
-      {
-        path: '/users/add',
-        meta: { auth: true, title: "添加用户", },
-        component: resolve => require(['../view/createUser.vue'], resolve)
-      },
+      // {
+      //   path: '/users',
+      //   meta: { auth: true, title: "用户列表", },
+      //   component: resolve => require(['../view/users.vue'], resolve)
+      // },
+      // {
+      //   path: '/users/edit/:id',
+      //   meta: { auth: true, title: "修改用户信息", },
+      //   component: resolve => require(['../view/createUser.vue'], resolve)
+      // },
+      // {
+      //   path: '/users/add',
+      //   meta: { auth: true, title: "添加用户", },
+      //   component: resolve => require(['../view/createUser.vue'], resolve)
+      // },
       {
         path: '/files/add',
         meta: { auth: true, title: "上传文件", },
@@ -63,12 +63,27 @@ const routes = [
       },
       {
         path: '/UserOriFiles/add',
-        meta: { auth: true, title: "添加用户原创列表", },
+        meta: { auth: true, title: "添加用户原创资源", },
         component: resolve => require(['../view/UserOriTmpsForm.vue'], resolve)
+      },
+      {
+        path: '/UserOriFiles/edit/:id',
+        meta: { auth: true, title: "修改用户原创", },
+        component: resolve => require(['../view/userOriFileForm.vue'], resolve)
       },
       {
         path: '/UserOriFiles/add/:id',
         meta: { auth: true, title: "添加原创申请", },
+        component: resolve => require(['../view/UserOriTmpsForm.vue'], resolve)
+      },
+      {
+        path: '/UserOriTmps',
+        meta: { auth: true, title: "用户原创列表", },
+        component: resolve => require(['../view/UserOriTmps.vue'], resolve)
+      },
+      {
+        path: '/UserOriTmps/edit/:id',
+        meta: { auth: true, title: "修改用户原创申请", },
         component: resolve => require(['../view/UserOriTmpsForm.vue'], resolve)
       }
     ]

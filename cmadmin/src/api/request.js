@@ -31,7 +31,7 @@ const allAjax = {
             this.$http.post('/register',data).then(fn);
         },
         logout(data,fn){
-            this.$http.post('/logout').then(fn);
+            this.$http.post('/adminLogout').then(fn);
         }
     },
 
@@ -97,7 +97,7 @@ const allAjax = {
         },
          /**
          * 
-         * 一个用户原创的详情
+         * 一个用户资源模块的详情
          * @param {any} data 
          * @param {any} fn 
          */
@@ -106,16 +106,16 @@ const allAjax = {
         },
          /**
          * 
-         * 更新一个用户原创
+         * 更新一个用户资源模块
          * @param {any} data 
          * @param {any} fn 
          */
-        update(url,data,fn){
-            this.$http.post(url,data).then(fn);
+        update(index,data,fn){
+            this.$http.post('/userOriFiles/'+index,data).then(fn);
         },
          /**
          * 
-         * 添加一个用户原创
+         * 添加一个用户资源模块
          * @param {any} data 
          * @param {any} fn 
          */
@@ -125,7 +125,7 @@ const allAjax = {
         },
         /**
          * 
-         * 删除一个用户原创
+         * 删除一个用户资源模块
          * @param {any} data 
          * @param {any} fn 
          */
@@ -133,7 +133,7 @@ const allAjax = {
             this.$http.post('/userOriFiles/'+data,{_method:'delete'}).then(fn);
         },
     },
-    //用户原创模块
+    //用户原创申请模块
     userOriTmps:{
         /**
          * 
@@ -159,8 +159,8 @@ const allAjax = {
          * @param {any} data 
          * @param {any} fn 
          */
-        update(url,data,fn){
-            this.$http.post(url,data).then(fn);
+        update(index,data,fn){
+            this.$http.post('/userOriTmps/'+index,data).then(fn);
         },
          /**
          * 
@@ -170,7 +170,7 @@ const allAjax = {
          */
         store(data,fn){
             console.log(data);
-            this.$http.post('/users',data).then(fn);
+            this.$http.post('/userOriTmps',data).then(fn);
         },
         /**
          * 
@@ -178,8 +178,8 @@ const allAjax = {
          * @param {any} data 
          * @param {any} fn 
          */
-        delete(url,data,fn){
-            this.$http.post(url,data).then(fn);
+        delete(data,fn){
+            this.$http.post('/userOriTmps/'+data,{_method:'delete'}).then(fn);
         },
     },
 };

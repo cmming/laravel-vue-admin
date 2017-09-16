@@ -72,7 +72,8 @@
                     $wrap = $('#uploader'),
 
                     $list = $('#thelist'),
-                    state = 'pending';
+                    state = 'pending',
+                    file_chunk;
                 // state = 'uploading';
                 //监听分块上传过程中的三个时间点  
                 $.ajaxSetup({
@@ -100,12 +101,13 @@
                                     $('.item').find("p.state").text("成功获取文件信息...");
                                     $.ajax({
                                         type: "POST",
-                                        cache: false,
+                                        // cache: false,
                                         async: false,  // 同步
                                         url: process.env.API_ROOT + "/checkIsUploaded",
                                         data: {
                                             fileMd5: _this.fileMd5 + '.' + file.ext,
-                                            file_size: file.size
+                                            file_size: file.size,
+                                            md5: _this.fileMd5
                                         },
                                         success: function (response) {
                                             if (response.code == 202) {
@@ -113,6 +115,9 @@
                                                 $('#ctlBtn').hide();
                                                 return false;
                                             } else {
+                                                if(response.code == 203){
+                                                    file_chunk = response.chunk
+                                                }
                                                 //获取文件信息后进入下一步  
                                                 deferred.resolve();
                                             }
@@ -126,33 +131,38 @@
                         //时间点2：如果有分块上传，则每个分块上传之前调用此函数  
                         beforeSend: function (block) {
                             var deferred = WebUploader.Deferred();
+                            //避免多次请求 使用 一次请求替换 多次 接口验证
+                            if(block.chunk<file_chunk){
+                                deferred.reject();
+                            }else{
+                                deferred.resolve();
+                            }
 
-                            $.ajax({
-                                type: "POST",
-                                cache: false,
-                                async: false,  // 同步
-                                url: process.env.API_ROOT + "/uploadCheck",
-                                data: {
-                                    //文件唯一标记  
-                                    fileMd5: _this.fileMd5,
-                                    //当前分块下标  
-                                    chunk: block.chunk,
-                                    //当前分块大小  
-                                    chunkSize: block.end - block.start
-                                },
-                                dataType: "json",
-                                success: function (response) {
-                                    //   console.log(response,response.ifExist);
-                                    if (response.ifExist) {
-                                        //分块存在，跳过  
-                                        deferred.reject();
+                            // $.ajax({
+                            //     type: "POST",
+                            //     async: false,  // 同步
+                            //     url: process.env.API_ROOT + "/uploadCheck",
+                            //     data: {
+                            //         //文件唯一标记  
+                            //         fileMd5: _this.fileMd5,
+                            //         //当前分块下标  
+                            //         chunk: block.chunk,
+                            //         //当前分块大小  
+                            //         chunkSize: block.end - block.start
+                            //     },
+                            //     dataType: "json",
+                            //     success: function (response) {
+                            //         //   console.log(response,response.ifExist);
+                            //         if (response.ifExist) {
+                            //             //分块存在，跳过  
+                            //             deferred.reject();
 
-                                    } else {
-                                        //分块不存在或不完整，重新发送该分块内容  
-                                        deferred.resolve();
-                                    }
-                                }
-                            });
+                            //         } else {
+                            //             //分块不存在或不完整，重新发送该分块内容  
+                            //             deferred.resolve();
+                            //         }
+                            //     }
+                            // });
 
                             this.owner.options.formData.fileMd5 = _this.fileMd5;
                             deferred.resolve();
@@ -164,7 +174,6 @@
                             //如果分块上传成功，则通知后台合并分块  
                             $.ajax({
                                 type: "POST",
-                                cache: false,
                                 async: false,  // 同步
                                 url: process.env.API_ROOT + "/mergeChunks",
                                 data: {
@@ -196,12 +205,13 @@
                     pick: '#filePicker',
                     paste: '#uploader',
                     chunked: true,
+                    threads : 1,
                     chunkSize: 2 * 1024 * 1024,
-                    chunkRetry: 2, //如果某个分片由于网络问题出错，允许自动重传次数
+                    chunkRetry: 10, //如果某个分片由于网络问题出错，允许自动重传次数
                     auto: false,
                     accept: {
                         title: 'Video',
-                        extensions: 'mp4,wmv,avi',
+                        extensions: 'mp4',
                         mimeTypes: 'video/*'
                     }
                 });
@@ -218,11 +228,11 @@
                     if (state === 'pending') {
                         $('#ctlBtn').text('暂停上传');
                         state = 'uploading';
-                        _this.uploader.upload();
+                        _this.uploader.upload(file_chunk);
                     } else if (state === 'paused') {
                         state = 'uploading';
                         $('#ctlBtn').text('暂停上传');
-                        _this.uploader.upload();
+                        _this.uploader.upload(file_chunk);
                     } else if (state === 'uploading') {
                         state = 'paused';
                         $('#ctlBtn').text('开始上传');
@@ -235,7 +245,7 @@
                     $('#btns').show();
                     $('#ctlBtn').show().text('开始上传');
                     $('#cancle').text('重新添加');
-                    console.log(file);
+                    // console.log(file);
                     $list.append('<div id="' + file.id + '" class="item">' +
                         '<h4 class="info page-title m-bottom-md">' + file.name + '</h4>' +
                         '<p class="state">等待上传...</p>' +
@@ -263,6 +273,7 @@
                 };
 
                 _this.uploader.on('uploadProgress', function (file, percentage) {
+                    $('#ctlBtn').hide();
                     var $li = $('#' + file.id), $percent = $li.find('.progress .progress-bar');
                     // if(percentage>=0.01)
                     var percentageNum = (percentage * 100).toFixed(2)
@@ -300,14 +311,14 @@
                 _this.uploader.onError = function (code) {
                     switch (code) {
                         case 'Q_TYPE_DENIED':
-                            self.$message({
+                            _this.$message({
                                 type: "error",
-                                message: 'Eroor: 文件格式错误！'
+                                message: 'Eroor: 文件格式错误(只能上传mp4格式的视频)！'
                             });
                             break;
                         case 'Q_EXCEED_SIZE_LIMIT':
                             alert('Eroor: ' + '文件格式超过最大值');
-                            self.$message({
+                            _this.$message({
                                 type: "error",
                                 message: 'Eroor:文件格式超过最大值!'
                             });
