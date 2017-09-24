@@ -33,20 +33,33 @@ class AppUserController extends BaseController
                 $user = User::where('uname','=',$request->get('name'))->first();
                 $token = JWTAuth::fromUser($user);
             }else{
-                return response()->json(['error' => '用户密码错误！'], 401);
+                return response()->json(['error' => '用户密码错误！','code'=>201]);
             }
         }else{
-            return response()->json(['error' => '用户不存在！'], 401);
+            return response()->json(['error' => '用户不存在！','code'=>202]);
         }
         $tokenInfo = [
-            'token' => $token,
-            'expired_at' => Carbon::now()->addMinutes(config('jwt.ttl'))->toDateTimeString(),
-            'refresh_expired_at' => Carbon::now()->addMinutes(config('jwt.refresh_ttl'))->toDateTimeString(),
+            'token' =>'Bearer '. $token,
+            'expired_at' => strtotime(Carbon::now()->addMinutes(config('jwt.ttl'))->toDateTimeString()),
+            'refresh_time' =>strtotime(Carbon::now()->addMinutes(config('jwt.refresh_time'))->toDateTimeString()) ,
+            'refresh_expired_at' =>strtotime(Carbon::now()->addMinutes(config('jwt.refresh_ttl'))->toDateTimeString()),
         ];
-        return ['user'=>$user,'data'=>$tokenInfo];
+        return ['user'=>$user,'data'=>$tokenInfo,'code'=>200];
     }
 
 	public function logout(){
 		return ['code'=>200,'msg'=>'退出登录'];
 	}
+
+	public function refreshToken(){
+        $old_token = JWTAuth::getToken();
+        $token = JWTAuth::refresh($old_token);
+        $tokenInfo = [
+            'token' => 'Bearer '. $token,
+            'expired_at' => strtotime(Carbon::now()->addMinutes(config('jwt.ttl'))->toDateTimeString()),
+            'refresh_time' =>strtotime(Carbon::now()->addMinutes(config('jwt.refresh_time'))->toDateTimeString()) ,
+            'refresh_expired_at' =>strtotime(Carbon::now()->addMinutes(config('jwt.refresh_ttl'))->toDateTimeString()),
+        ];
+        return ['data'=>$tokenInfo,'code'=>200];
+    }
 }

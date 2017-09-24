@@ -58,10 +58,11 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         //官方的 两个 中间件
         'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
-        'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
+        'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
 
         //自己根据 jwt 创建的中间件
         'verifyToken' => 'App\Http\Middleware\VerifyToken',
-        'userChangeMidleware'=>'App\Http\Middleware\UserChangeMidleware'
+        'userChangeMidleware'=>'App\Http\Middleware\UserChangeMidleware',
+        'ApiAfterMiddleware'=>'App\Http\Middleware\ApiAfterMiddleware'
     ];
 }

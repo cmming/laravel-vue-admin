@@ -10,7 +10,7 @@ use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 use \Tymon\JWTAuth\Middleware\GetUserFromToken;
 
-class VerifyToken extends GetUserFromToken
+class VerifyToken
 {
     /**
      * 请求前置中间件

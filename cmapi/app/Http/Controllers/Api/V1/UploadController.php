@@ -35,9 +35,9 @@ class UploadController extends BaseController
 			$filename = $fileMd5 . '_' . $chunk . '.part';
 
 			$bool = Storage::disk('uploadsVideoTemp')->put($filename, file_get_contents($realpath));
-			return ['id' => $chunk, 'msg' => '文件接受成功', 'code' => 200];
+			return ['id' => $chunk, 'msg' => '文件接受成功', 'code' => 200,'lastmodified'=>time()];
 		} else {
-			return ['id' => $chunk, 'msg' => '文件接受失败', 'code' => 201];
+			return ['id' => $chunk, 'msg' => '文件接受失败', 'code' => 201,'lastmodified'=>time()];
 		}
 	}
 
