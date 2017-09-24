@@ -90,26 +90,16 @@
 					this.loadding = true;
 					var self = this;
 					allAjax.userData.adminLogin.call(this, resData, function (response) {
-						if(response.status == 200){
+						if(response.data.code == 200){
 							localStorage.token = response.data.data.token;
-							localStorage.userName = response.data.user.uname;
+							localStorage.expired_at = response.data.data.expired_at;
+							localStorage.refresh_time = response.data.data.refresh_time;
+							localStorage.refresh_expired_at = response.data.data.refresh_expired_at;
 							self.$router.push('main');
+						}else{
+							self.requestError = true;
+							self.errorMsg = response.data.error;
 						}
-						// if (response.data.code === "200") {
-						// 	self.loadding = false;
-						// 	//将token 存在session 里面，后面的每一次都要在请求头中添加
-						// 	localStorage.token = response.data.data.token;
-						// 	localStorage.refresh_expired_at = response.data.data.refresh_expired_at;
-						// 	localStorage.userName = self.formData.ad_uname;
-						// 	// self.$store.dispatch('UPDATEUSERINFO',{"userName":localStorage.userName});
-						// 	// self.$store.dispatch('UPDATEUSERINFO');
-						// 	self.$router.push('main');
-						// }
-						// else {
-						// 	self.requestError = true;
-						// 	self.errorMsg = response.data.msg;
-						// 	self.loadding = false;
-						// }
 					});
                 }).catch(() => {
                     // eslint-disable-next-line

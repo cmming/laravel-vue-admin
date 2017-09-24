@@ -95,8 +95,8 @@ const allAjax = {
         // list(data,fn){
         //     this.$http.get('/userOriFiles?'+data).then(fn);
         // },
-        list(data,fn){
-            this.$http.get('/users?'+data).then(fn);
+        list(t,data,fn){
+            t.$http.get('/users?'+data).then(fn);
         },
          /**
          * 
@@ -187,4 +187,7 @@ const allAjax = {
     },
 };
 
-export default allAjax;
+//读者数据的自定义资源数据模块
+const userOriFiles = allAjax.userOriFiles;
+
+export {userOriFiles};

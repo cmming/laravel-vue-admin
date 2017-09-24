@@ -8,13 +8,13 @@
                 <div class="col-md-11 col-sm-10 pull-left">
                     <div class="row">
                         <!-- <div class="col-md-2 col-sm-12">
-                        </div> -->
+                                        </div> -->
                         <!-- <div class="col-md-6 col-sm-12">
-                            <span class = "search_time_title">创建时间：</span>
-                            <el-date-picker @change="setStartDate" type="date" placeholder="开始日期" v-model="searchData.btime"></el-date-picker>
+                                            <span class = "search_time_title">创建时间：</span>
+                                            <el-date-picker @change="setStartDate" type="date" placeholder="开始日期" v-model="searchData.btime"></el-date-picker>
 
-                            <el-date-picker @change="setEndDate" type="date" placeholder="结束日期" v-model="searchData.etime"></el-date-picker>
-                        </div> -->
+                                            <el-date-picker @change="setEndDate" type="date" placeholder="结束日期" v-model="searchData.etime"></el-date-picker>
+                                        </div> -->
                         <div class="col-md-3">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="文件名称" v-model="searchData.file_name">
@@ -33,9 +33,9 @@
                 <div class="font-600 col-md-1 col-sm-2" style="text-align:center">操作区:</div>
                 <div class="col-md-11 col-sm-10">
                     <!-- <button type="button" class="btn btn-danger btn-sm" @click="del(chooseItem)"> 
-                        <i class="fa fa-trash-o fa-fw"></i>
-                        删除
-                    </button> -->
+                                        <i class="fa fa-trash-o fa-fw"></i>
+                                        删除
+                                    </button> -->
                     <button type="button" class="btn btn-warning btn-sm" @click="edit(chooseItem)">
                         <i class="fa fa-check-circle-o fa-fw"></i>
                         修改
@@ -90,162 +90,167 @@
             </div>
         </div>
 
-
     </div>
 </template>
 <script>
-    import allAjax from '../api/request.js'
-    import { mapGetters, mapActions } from 'vuex'
-    // 引入图片
-    import testSrc from '../assets/images/img11.jpg'
+import allAjax from '../api/request.js'
+import { mapGetters, mapActions, mapState } from 'vuex'
+// 引入图片
+import testSrc from '../assets/images/img11.jpg'
 
-    export default {
-        data() {
-            return {
-                // 初始化导航栏数据
-                toBreadcrumb: [
-                    { path: 'main', name: '主页' },
-                    { path: 'orderInquery', name: '管理员列表' },
-                ],
-                // 列表数据
-                tableHeader: [
-                    { 'name': '编号', 'val': 1 },
-                    { 'name': '文件名', 'val': 1 },
-                    { 'name': '文件大小', 'val': 1 },
-                    { 'name': '文件类型', 'val': 1 },
-                    { 'name': '文件下载地址', 'val': 1 },
-                ],
-                dataList: [],
-                chooseItem: '',
-                searchData: { "file_name": '', "btime": "", "etime": "", "page": '1', },
-                allPage: '',
-                curpage: 1,
-                restaurants: []
+export default {
+    data() {
+        return {
+            // 初始化导航栏数据
+            toBreadcrumb: [
+                { path: 'main', name: '主页' },
+                { path: 'orderInquery', name: '管理员列表' },
+            ],
+            // 列表数据
+            tableHeader: [
+                { 'name': '编号', 'val': 1 },
+                { 'name': '文件名', 'val': 1 },
+                { 'name': '文件大小', 'val': 1 },
+                { 'name': '文件类型', 'val': 1 },
+                { 'name': '文件下载地址', 'val': 1 },
+            ],
+            dataList: [],
+            chooseItem: '',
+            searchData: { "file_name": '', "btime": "", "etime": "", "page": '1', },
+            allPage: '',
+            curpage: 1,
+            restaurants: []
 
-            }
+        }
+    },
+    created() {
+        this.getData();
+        // this.GETUSERORIFILElIST();
+    },
+    computed: mapGetters([
+        'userOriFiles'
+    ]),
+    methods: {
+        // 映射 vuex 对象上的方法
+        GETUSERORIFILElIST(){
+            var self = this;
+            var resData = 'page=' + this.curpage;
+            this.$store.dispatch('GETUSERORIFILElIST',resData);
         },
-        created() {
+        // 监视分页 点击事件
+        listen(data) {
+            this.curpage = data;
+            this.searchData.page = data;
             this.getData();
-        },
-        methods: {
-            searchCal(ev) {
-                console.log(ev);
-                this.getData();
-            },
-            // 监视分页 点击事件
-            listen(data) {
-                this.curpage = data;
-                this.searchData.page = data;
-                this.getData();
-                if (data == this.allPage) {
-                    this.$message({
-                        type: 'warning',
-                        message: '最后一页!'
-                    });
-                }
-            },
-            getData() {
-                var self = this;
-                var resData = 'page=' + this.curpage;
-                allAjax.userOriFiles.list.call(this, resData, function (response) {
-                    if (response.status == 200) {
-                        console.log(response.data);
-                        self.dataList = response.data.data;
-                        self.allPage = response.data.meta.pagination.total_pages;
-
-                    } else {
-                        self.allPage = 0;
-                        self.$message({
-                            type: "warning",
-                            message: response.data
-                        });
-                    }
-                });
-            },
-            del(index) {
-                this.$confirm('此操作将永久删除该数据文件, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    // var resData ={};
-                    // resData._method = 'delete',self=this;
-                    allAjax.userOriFiles.delete.call(this, index, function (response) {
-                        console.log(response.status);
-                        if (response.status == 204) {
-                            self.$message({
-                                type: "success",
-                                message: '数据删除成功！'
-                            });
-                            self.getData();
-                            // window.location.href = '#/users'
-                        }
-                    });
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!'
-                    });
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
-
-            },
-            //展示详情
-            edit(index) {
-                //使用模态框 显示
-                if (index) {
-                    this.$router.push('/UserOriFiles/edit/' + index);
-                }
-
-            },
-            //发布视频
-            addUserFilesStore(index) {
-                if (index) {
-                    this.$router.push('/UserOriFiles/add/' + index);
-                }
-            },
-            //日期的格式化
-            setStartDate(val) {
-                this.searchData.btime = val;
-            },
-            setEndDate(val) {
-                this.searchData.etime = val;
-            },
-            //添加搜索
-            search() {
-
-                var resData = this.getDataFormat(this.searchData), self = this;
-
-                console.log(this.getDataFormat(this.searchData));
-                allAjax.userOriFiles.list.call(this, resData, function (response) {
-                    if (response.status == 200) {
-                        console.log(response.data);
-                        self.dataList = response.data.data;
-                        self.allPage = response.data.meta.pagination.total_pages;
-                    } else {
-                        self.allPage = 0;
-                        self.$message({
-                            type: "warning",
-                            message: response.data
-                        });
-                    }
+            if (data == this.allPage) {
+                this.$message({
+                    type: 'warning',
+                    message: '最后一页!'
                 });
             }
+        },
+        getData() {
+            var self = this;
+            var resData = 'page=' + this.curpage;
+            allAjax.userOriFiles.list.call(this, resData, function(response) {
+                if (response.status == 200) {
+                    console.log(response.data);
+                    self.dataList = response.data.data;
+                    self.allPage = response.data.meta.pagination.total_pages;
+
+                } else {
+                    self.allPage = 0;
+                    self.$message({
+                        type: "warning",
+                        message: response.data
+                    });
+                }
+            });
+        },
+        del(index) {
+            this.$confirm('此操作将永久删除该数据文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                // var resData ={};
+                // resData._method = 'delete',self=this;
+                allAjax.userOriFiles.delete.call(this, index, function(response) {
+                    console.log(response.status);
+                    if (response.status == 204) {
+                        self.$message({
+                            type: "success",
+                            message: '数据删除成功！'
+                        });
+                        self.getData();
+                        // window.location.href = '#/users'
+                    }
+                });
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+
+        },
+        //展示详情
+        edit(index) {
+            //使用模态框 显示
+            if (index) {
+                this.$router.push('/UserOriFiles/edit/' + index);
+            }
+
+        },
+        //发布视频
+        addUserFilesStore(index) {
+            if (index) {
+                this.$router.push('/UserOriFiles/add/' + index);
+            }
+        },
+        //日期的格式化
+        setStartDate(val) {
+            this.searchData.btime = val;
+        },
+        setEndDate(val) {
+            this.searchData.etime = val;
+        },
+        //添加搜索
+        search() {
+
+            var resData = this.getDataFormat(this.searchData), self = this;
+
+            console.log(this.getDataFormat(this.searchData));
+            allAjax.userOriFiles.list.call(this, resData, function(response) {
+                if (response.status == 200) {
+                    console.log(response.data);
+                    self.dataList = response.data.data;
+                    self.allPage = response.data.meta.pagination.total_pages;
+                } else {
+                    self.allPage = 0;
+                    self.$message({
+                        type: "warning",
+                        message: response.data
+                    });
+                }
+            });
         }
     }
+}
 
 </script>
 <style lang="css" scoped>
-    .table th,
-    .table td {
-        text-align: center;
-        vertical-align: middle!important;
-    }
+.table th,
+.table td {
+    text-align: center;
+    vertical-align: middle!important;
+}
 
-    .font-600 {
-        padding: 10px 0;
-    }
+.font-600 {
+    padding: 10px 0;
+}
 </style>

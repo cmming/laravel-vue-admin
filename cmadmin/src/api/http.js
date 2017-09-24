@@ -25,10 +25,10 @@ var instance = axios.create({
     // return until.serializeObject(data);
     let ret = ''
     for (let it in data) {
-      var obj =data[it];
-      if(!(typeof(obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() == "[object object]" && !obj.length)){
+      var obj = data[it];
+      if (!(typeof (obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() == "[object object]" && !obj.length)) {
         ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-      }else{
+      } else {
         ret += encodeURIComponent(it) + '=' + JSON.stringify(data[it]) + '&'
       }
     }
@@ -39,16 +39,9 @@ var instance = axios.create({
 
 // //添加请求拦截器
 instance.interceptors.request.use(function (config) {
-  // 在发送请求之前做某件事
-  // if(config.method  === 'post'){
-  //     // JSON 转换为 FormData
-  //     const formData = new FormData()
-  //     Object.keys(config.data).forEach(key => formData.append(key, config.data[key]))
-  //     config.data = formData
-  // }
-
+  console.log(config.method);
   if (localStorage.token) {
-    config.headers['Authorization'] = 'Bearer ' + localStorage.getItem("token");
+    config.headers['Authorization'] = localStorage.getItem("token");
   }
   // 在发送请求之前做某事
   // 1.加载一个loading的样式组件
@@ -58,17 +51,33 @@ instance.interceptors.request.use(function (config) {
   //请求错误时做些事
   // 1.隐藏之前的loading组件 显示加载动画
   store.state.loading.loading = false;
-  // 全局方法错误请求的方法
-  // Notification.error({
-  //   title: '错误',
-  //   message: '请求失败，联系管理员'
-  // });
-  // return Promise.reject(error);
 });
 
 //添加响应拦截器 将刷新token 的动作放在后台 前台制作token 过期的操作
 instance.interceptors.response.use(function (response) {
-  // console.log(response.status);
+  console.log(response);
+  //根据请求头部进行token 的主动刷新判断
+  if (response.headers.lastmodified) {
+    var lastmodified = response.headers.lastmodified;
+    if (lastmodified > localStorage.refresh_time && lastmodified < localStorage.expired_at) {
+      axios.get(process.env.API_ROOT+"/refreshToken", {
+        headers: {
+          'Authorization': localStorage.getItem("token")
+        }
+      }).then(function (response) {
+        if(response.data.code == 200){
+          localStorage.token = response.data.data.token;
+          localStorage.expired_at = response.data.data.expired_at;
+          localStorage.refresh_time = response.data.data.refresh_time;
+          localStorage.refresh_expired_at = response.data.data.refresh_expired_at;
+        }
+
+      });
+    }
+  }
+  if (response.headers.Authorization) {
+    localStorage.token = response.headers.Authorization;
+  }
   var reStatus = response.status;
   switch (reStatus) {
     case 2041:
@@ -94,7 +103,7 @@ instance.interceptors.response.use(function (response) {
       case 401:
         var now = 3,
           timer = null;
-          localStorage.removeItem('token');
+        localStorage.removeItem('token');
         var showAlert = Notification.error({
           title: '错误',
           message: error.response.data + '，' + now + 's,即将跳转到登录页面，请重新登录',
@@ -169,12 +178,6 @@ instance.interceptors.response.use(function (response) {
     }
   }
 
-
-  // 全局方法错误请求的方法
-  // Notification.error({
-  //   title: '错误',
-  //   message: '响应失败，联系管理员'
-  // });
   return Promise.reject(error);
 });
 
