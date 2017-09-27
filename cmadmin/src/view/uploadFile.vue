@@ -199,6 +199,9 @@ export default {
                             type: "POST",
                             async: false,  // 同步
                             url: process.env.API_ROOT + "/mergeChunks",
+                            headers: {
+                                'Authorization': localStorage.token
+                            },
                             data: {
                                 fileMd5: _this.fileMd5,
                                 chunks: file.blocks.length,

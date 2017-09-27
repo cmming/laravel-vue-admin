@@ -149,16 +149,15 @@
             },
             // 退出登录
             siginOut:function(){
+                var self =this;
                 localStorage.removeItem('token');
-                        // this.$store.dispatch('CLEARUSERINFO');
-                this.$router.push('./login');
-                allAjax.userData.logout.call(this, function (response) {
-                    console.log(response.data);
-                    if(response.status == 200){
-
-                        localStorage.removeItem('token');
-                        // this.$store.dispatch('CLEARUSERINFO');
-                        this.$router.push('./login');
+                self.$router.push('/login');
+                    allAjax.userData.logout.call(this, function (response) {
+                        console.log(response,response.data.code == 200);
+                        if(response.data.code == 200){
+                            localStorage.removeItem('token');
+                            // this.$store.dispatch('CLEARUSERINFO');
+                            self.$router.push('/login');
                     }
                 });
                 

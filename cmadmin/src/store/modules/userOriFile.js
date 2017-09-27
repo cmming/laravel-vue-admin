@@ -18,6 +18,8 @@ const state = {
     lists: [],
     // 一个数据的详情
     details: {},
+    allPage: '',
+    curpage: 1,
   }
 
 }
@@ -35,26 +37,38 @@ const getters = {
 // 定义 事件的 订阅 (事件类型)和发布者（回调函数 ACTION） 这里面相当于 视图
 const mutations = {
   //获取USERORIFILElIST列表数据 
-  SETUSERORIFILElIST(state, list) {
-    state.userOriFiles.lists = list
+  SETUSERORIFILElIST(state, data) {
+    //列表数据 赋值
+    state.userOriFiles.lists = data.data;
+    //  总页数赋值
+    state.userOriFiles.allPage = data.meta.pagination.total_pages;
+    //当前页的设置
+    state.userOriFiles.curpage = data.meta.pagination.current_page;
   }
 }
 
 //action
 //异步操作  将数据与视图层分离
 const actions = {
-    GETUSERORIFILElIST({commit},dataform){
-        console.log(dataform);
-        userOriFiles.list.call(this,dataform,function(response){
-            commit(SETUSERORIFILElIST, response.data.data);
-        })
-    }
+  //获取数据
+  GETUSERORIFILElIST({ commit },params) {
+    userOriFiles.list(params.vue,params.resData,function(response){
+        commit(SETUSERORIFILElIST, response.data);
+    })
+  },
+  // 删除数据
+  GETETUSERORIFILEDETAIL({ commit },params) {
+    userOriFiles.delete(params.vue,params.resData,function(response){
+        commit(SETUSERORIFILElIST, response.data);
+    })
+  }
+
 
 }
 
 export default {
-    state,
-    getters,
-    mutations,
-    actions
+  state,
+  getters,
+  mutations,
+  actions
 }

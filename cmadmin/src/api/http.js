@@ -59,13 +59,15 @@ instance.interceptors.response.use(function (response) {
   //根据请求头部进行token 的主动刷新判断
   if (response.headers.lastmodified) {
     var lastmodified = response.headers.lastmodified;
+    console.log(localStorage.refresh_time, lastmodified, localStorage.expired_at);
     if (lastmodified > localStorage.refresh_time && lastmodified < localStorage.expired_at) {
-      axios.get(process.env.API_ROOT+"/refreshToken", {
+      axios.get(process.env.API_ROOT + "/refreshToken", {
         headers: {
           'Authorization': localStorage.getItem("token")
         }
       }).then(function (response) {
-        if(response.data.code == 200){
+        console.log(response, response.data.code == 200);
+        if (response.data.code == 200) {
           localStorage.token = response.data.data.token;
           localStorage.expired_at = response.data.data.expired_at;
           localStorage.refresh_time = response.data.data.refresh_time;
@@ -94,7 +96,7 @@ instance.interceptors.response.use(function (response) {
 }, function (error) {
   //请求错误时做些事 1。改变请求的全局状态
   store.state.loading.loading = false;
-  console.log(error.response.status);
+  console.log(error);
   if (error.response.status) {
     // if (0) {
     var errorStatus = error.response.status;
@@ -171,6 +173,17 @@ instance.interceptors.response.use(function (response) {
           // customClass:""
         });
         break;
+      case 500:
+        var errorMsg = '错误码：' + errorStatus;
+        console.log(error.response.data.errors);
+        Notification.error({
+          title: '错误',
+          message: errorMsg,
+          //不关闭弹框
+          duration: 3000,
+          // customClass:""
+        });
+        break;
       default:
 
         break;
@@ -182,3 +195,5 @@ instance.interceptors.response.use(function (response) {
 });
 
 Vue.use(VueAxios, instance)
+
+

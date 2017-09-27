@@ -1,6 +1,11 @@
 // 将所有的请求写在这里
 // 接口的二级目录
 const allAjax = {
+    token:{
+        refreshToken() {
+            this.$http.get('/refreshToken');
+        },
+    },
     userData: {
         
         /**
@@ -31,7 +36,7 @@ const allAjax = {
             this.$http.post('/register',data).then(fn);
         },
         logout(data,fn){
-            this.$http.post('/adminLogout').then(fn);
+            this.$http.get('/adminLogout').then(fn);
         }
     },
 
@@ -92,11 +97,8 @@ const allAjax = {
          * @param {any} data 
          * @param {any} fn 
          */
-        // list(data,fn){
-        //     this.$http.get('/userOriFiles?'+data).then(fn);
-        // },
         list(data,fn){
-            this.$http.get('/users?'+data).then(fn);
+            this.$http.get('/userOriFiles?'+data).then(fn);
         },
          /**
          * 

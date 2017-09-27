@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
+
 // import * as getters from './getters'
 // import * as actions from './actions.js'
 
