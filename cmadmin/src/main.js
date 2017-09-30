@@ -59,7 +59,6 @@ import store from './store'
 
 
 
-import allAjax from './api/request1.js'
 //已入一个自定义指令 （最终采用 模型方式）
 import directive from './directive/open.js'
 

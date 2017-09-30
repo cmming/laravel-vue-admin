@@ -19,7 +19,7 @@
                                 <label class="control-label col-lg-2">文件的名称：</label>
                                 <div :class="{'col-lg-6': true, 'has-error': (errors.has('file_name:required'))}">
                                     <input autocomplete="off" v-validate="'required'" type="text" class="form-control input-sm" placeholder="文件的名称" name="file_name"
-                                        v-model="formData.file_name">
+                                        v-model="userOriFiles.details.file_name">
                                     <v-errorMsg :errorMsgAlert="{'isShow':errors.has('file_name'),'msg':[{'isShow':errors.has('file_name:required'),'msg':errors.first('file_name:required')}]}">
                                     </v-errorMsg>
                                 </div>
@@ -51,6 +51,7 @@
     import breadcrumb from '../components/common/breadcrumb.vue'
     import errorMsg from '../components/common/formError.vue'
     import allAjax from '../api/request.js'
+    import { mapGetters } from 'vuex'
     export default {
         data() {
             return {
@@ -70,21 +71,17 @@
             'v-breadcrumb': breadcrumb,
             'v-errorMsg': errorMsg
         },
+        computed: mapGetters([
+            'userOriFiles'
+        ]),
         //addTerm.vue
         created() {
             var route_path = this.$route.path;
             // this.formdata.update_id = update_id;
             if (route_path.indexOf('/UserOriFiles/edit') != -1 && (this.$route.params.id)) {
-
                 //查询该id的 相关资源的基本信息
-                var self = this;
-                allAjax.userOriFiles.show.call(this, this.$route.params.id, function (response) {
-                    console.log(response);
-                    if (response.status == 200) {
-                        self.formData.file_name = response.data.data.file_name;
-                    }
-                });
-
+                var paramObj = { vue: this, resData: this.$route.params.id };
+                this.$store.dispatch('GETUSERORIFILEDETAIL', paramObj);
             }
         },
 
@@ -93,20 +90,22 @@
                 //修改
                 this.$validator.validateAll().then((result) => {
                     if (result) {
-                        var resData = this.formData;
-                        resData._method = 'put';
-                        var self = this;
-                        console.log(this.$route.params.id);
-                        allAjax.userOriFiles.update.call(this, this.$route.params.id, resData, function (response) {
-                            console.log(response.status);
-                            if (response.status == 200) {
-                                self.$message({
-                                    type: "success",
-                                    message: '信息修改成功！'
-                                });
-                                window.location.href = '#/userOriFiles'
-                            }
-                        });
+                        // var resData = this.formData;
+                        // resData._method = 'put';
+                        // var self = this;
+                        // console.log(this.$route.params.id);
+                        var paramObj = {vue: this, index: this.$route.params.id,resData:this.userOriFiles.details};
+                        this.$store.dispatch('SETUSERORIFILEDETAIL',paramObj);
+                        // allAjax.userOriFiles.update.call(this, this.$route.params.id, resData, function (response) {
+                        //     console.log(response.status);
+                        //     if (response.status == 200) {
+                        //         self.$message({
+                        //             type: "success",
+                        //             message: '信息修改成功！'
+                        //         });
+                        //         window.location.href = '#/userOriFiles'
+                        //     }
+                        // });
                         return;
                     }
                     self.$message({

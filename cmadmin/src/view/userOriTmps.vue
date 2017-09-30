@@ -30,7 +30,7 @@
                         <input type="text" class="form-control" placeholder="电影名称标题" v-model="searchData.title">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-success no-shadow" tabindex="-1" @click="search">搜索</button>
-                            <button type="button" class="btn btn-success dropdown-toggle no-shadow" data-toggle="dropdown" tabindex="-1" @click = "search_tar = !search_tar">条件</button>
+                            <button type="button" class="btn btn-success dropdown-toggle no-shadow" data-toggle="dropdown" tabindex="-1" @click="search_tar = !search_tar">条件</button>
                             <ul class="dropdown-menu pull-right" :class="{'show_block':search_tar}" role="menu">
                                 <li><a href="javascript:void(0)">电影标题</a></li>
                                 <li><a href="javascript:void(0)">Another action</a></li>
@@ -69,7 +69,7 @@
         <!--数据展示区域-->
 
         <div class="m-top-md bg-white padding-xs" style="overflowX:auto">
-            <div v-show="allPage">
+            <div v-show="userOriTmp.allPage">
                 <table class="table table-responsive table-condensed table-bordered table-striped table-hover">
                     <thead>
                         <tr>
@@ -79,7 +79,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item,key) in dataList">
+                        <tr v-for="(item,key) in userOriTmp.list">
                             <td>
                                 <div class="custom-radio">
                                     <input type="radio" :id="key" name="chooseItem" :value="item.mid" v-model="chooseItem">
@@ -95,9 +95,9 @@
                     </tbody>
                 </table>
                 <!--分页组件-->
-                <v-page :curPage="curpage" :allPage="allPage" @btn-click='listen'></v-page>
+                <v-page :curPage="curpage" :allPage="userOriTmp.allPage" @btn-click='listen'></v-page>
             </div>
-            <div v-show="!allPage">
+            <div v-show="!userOriTmp.allPage">
                 <div class="alert" ng-hide="orderView">
                     <strong>抱歉！</strong> 没有相关数据
                 </div>
@@ -130,13 +130,18 @@
                 ],
                 dataList: [],
                 chooseItem: '',
-                searchData: { "page": '1', "btime": "", "etime": "","title":"" },
+                searchData: { "page": '1', "btime": "", "etime": "", "title": "" },
                 allPage: '',
                 curpage: 1,
                 restaurants: [],
-                search_tar:false
+                search_tar: false
 
             }
+        },
+        computed: {
+            ...mapGetters([
+                'userOriTmp'
+            ]),
         },
         created() {
             this.getData();
@@ -145,10 +150,10 @@
 
             // 监视分页 点击事件
             listen(data) {
-                this.curpage = data;
-                this.searchData.page = data;
+                this.userOriTmp.curpage = data;
+                this.userOriTmp.searchData.page = data;
                 this.getData();
-                if (data == this.allPage) {
+                if (data == this.userOriTmp.allPage) {
                     this.$message({
                         type: 'warning',
                         message: '最后一页!'
@@ -156,24 +161,10 @@
                 }
             },
             getData() {
-                var self = this;
-                var resData = 'page=' + this.curpage;
-                allAjax.userOriTmps.list.call(this, resData, function (response) {
-                    if (response.status == 200) {
-                        self.dataList = response.data.data;
-                        self.allPage = response.data.meta.pagination.total_pages;
-
-                    } else {
-                        self.allPage = 0;
-                        self.$message({
-                            type: "warning",
-                            message: response.data
-                        });
-                    }
-                });
+                var paramsObj = { vue: this, resData: this.getDataFormat(this.userOriTmp.searchData) };
+                this.$store.dispatch('GETUSERORITMPLIST', paramsObj);
             },
             del(index) {
-
                 this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -220,22 +211,8 @@
             search() {
 
                 var resData = this.getDataFormat(this.searchData), self = this;
-
-                // console.log(this.getDataFormat(this.searchData));
-                allAjax.userOriTmps.list.call(this, resData, function (response) {
-                    if (response.status == 200) {
-                        // console.log(response.data);
-                        self.dataList = response.data.data;
-                        self.allPage = response.data.meta.pagination.total_pages;
-
-                    } else {
-                        self.allPage = 0;
-                        self.$message({
-                            type: "warning",
-                            message: response.data
-                        });
-                    }
-                });
+                var paramsObj = { vue: this, resData: this.getDataFormat(this.searchData) };
+                this.$store.dispatch('GETUSERORITMPLIST', paramsObj);
             }
         }
     }

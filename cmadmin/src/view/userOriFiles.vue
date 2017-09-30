@@ -11,13 +11,13 @@
                         </div> -->
                         <!-- <div class="col-md-6 col-sm-12">
                             <span class = "search_time_title">创建时间：</span>
-                            <el-date-picker @change="setStartDate" type="date" placeholder="开始日期" v-model="searchData.btime"></el-date-picker>
+                            <el-date-picker @change="setStartDate" type="date" placeholder="开始日期" v-model="userOriFiles.searchData.btime"></el-date-picker>
 
-                            <el-date-picker @change="setEndDate" type="date" placeholder="结束日期" v-model="searchData.etime"></el-date-picker>
+                            <el-date-picker @change="setEndDate" type="date" placeholder="结束日期" v-model="userOriFiles.searchData.etime"></el-date-picker>
                         </div> -->
                         <div class="col-md-3">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="文件名称" v-model="searchData.file_name">
+                                <input type="text" class="form-control" placeholder="文件名称" v-model="userOriFiles.searchData.file_name">
                                 <div class="input-group-btn">
                                     <button type="button" class="btn btn-success no-shadow" tabindex="-1" @click="search">搜索</button>
                                 </div>
@@ -89,12 +89,9 @@
                 </div>
             </div>
         </div>
-
-
     </div>
 </template>
 <script>
-    import allAjax from '../api/request.js'
     import { mapGetters, mapActions } from 'vuex'
     // 引入图片
     import testSrc from '../assets/images/img11.jpg'
@@ -115,31 +112,27 @@
                     { 'name': '文件类型', 'val': 1 },
                     { 'name': '文件下载地址', 'val': 1 },
                 ],
-                dataList: [],
                 chooseItem: '',
-                searchData: { "file_name": '', "btime": "", "etime": "", "page": '1', },
 
             }
         },
         computed: mapGetters([
-            'userOriFiles'
+            'userOriFiles',
         ]),
         created() {
-            // this.getData();
             this.list();
         },
         methods: {
             // 使用dispatched 发送请求
-            list(){
-                var self = this;
-                var resData = 'page=' + this.userOriFiles.curpage;
-                var paramObj = {vue:this,resData:resData};
-                this.$store.dispatch('GETUSERORIFILElIST',paramObj);
+            list() {
+                var resData = this.getDataFormat(this.userOriFiles.searchData);
+                var paramObj = { vue: this, resData: resData };
+                this.$store.dispatch('GETUSERORIFILElIST', paramObj);
             },
             // 监视分页 点击事件
             listen(data) {
                 this.userOriFiles.curpage = data;
-                this.searchData.page = data;
+                this.userOriFiles.searchData.page = data;
                 this.list();
                 if (data == this.userOriFiles.allPage) {
                     this.$message({
@@ -155,23 +148,8 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    var paramObj = {vue:this,resData:index};
-                    this.$store.dispatch('GETETUSERORIFILEDETAIL',paramObj);
-                    // allAjax.userOriFiles.delete.call(this, index, function (response) {
-                    //     console.log(response.status);
-                    //     if (response.status == 204) {
-                    //         self.$message({
-                    //             type: "success",
-                    //             message: '数据删除成功！'
-                    //         });
-                    //         self.getData();
-                    //         // window.location.href = '#/users'
-                    //     }
-                    // });
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!'
-                    });
+                    var paramObj = { vue: this, resData: index };
+                    this.$store.dispatch('DELETEUSERORIFILE', paramObj);
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -196,30 +174,17 @@
             },
             //日期的格式化
             setStartDate(val) {
-                this.searchData.btime = val;
+                this.userOriFiles.searchData.btime = val;
             },
             setEndDate(val) {
-                this.searchData.etime = val;
+                this.userOriFiles.searchData.etime = val;
             },
             //添加搜索
             search() {
-
-                var resData = this.getDataFormat(this.searchData), self = this;
-
-                console.log(this.getDataFormat(this.searchData));
-                allAjax.userOriFiles.list.call(this, resData, function (response) {
-                    if (response.status == 200) {
-                        console.log(response.data);
-                        self.dataList = response.data.data;
-                        self.allPage = response.data.meta.pagination.total_pages;
-                    } else {
-                        self.allPage = 0;
-                        self.$message({
-                            type: "warning",
-                            message: response.data
-                        });
-                    }
-                });
+                // 搜索的话，将page 进行 重置为1
+                this.userOriFiles.searchData.page = 1;
+                var resData = this.getDataFormat(this.userOriFiles.searchData);
+                this.list();
             }
         }
     }

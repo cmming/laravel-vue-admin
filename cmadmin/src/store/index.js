@@ -8,6 +8,7 @@ Vue.use(Vuex)
 
 import loading from './modules/loading.js'
 import userOriFile from './modules/userOriFile'
+import userOriTmp from './modules/userOriTmp'
 // import userInfo from './modules/userInfo.js'
 
 // 导出多个模块的数据 ->应该仅仅包含
@@ -18,6 +19,7 @@ export default new Vuex.Store({
         loading,
         // userInfo
         userOriFile,
+        userOriTmp,
     },
 
 });
