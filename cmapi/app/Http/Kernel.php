@@ -62,7 +62,7 @@ class Kernel extends HttpKernel
 
         //自己根据 jwt 创建的中间件
         'verifyToken' => 'App\Http\Middleware\VerifyToken',
-        'userChangeMidleware'=>'App\Http\Middleware\UserChangeMidleware',
-        'ApiAfterMiddleware'=>'App\Http\Middleware\ApiAfterMiddleware'
+        'verifyTokenAfter' => 'App\Http\Middleware\VerifyTokenAfter',
+        'userChangeMidleware'=>'App\Http\Middleware\UserChangeMidleware'
     ];
 }

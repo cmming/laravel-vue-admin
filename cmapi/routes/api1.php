@@ -38,7 +38,7 @@ $api->version('v1', [
 ], function ($api) {
 	//自定义jwt验证
 	$api->group(['middleware' => ['userChangeMidleware']], function ($api) {
-		$api->group(['middleware' => ['verifyToken','verifyTokenAfter']], function ($api) {
+		$api->group(['middleware' => ['verifyToken','ApiAfterMiddleware']], function ($api) {
 //		$api->group(['middleware' => ['jwt.refresh']], function ($api) {
 			//退出登录
 			$api->post('logout', [
@@ -202,12 +202,12 @@ $api->version('v1', [
 
 	});
 
-	$api->get('refreshToken', [
-		//路由别名
-		'as' => 'AppUserController.refreshToken',
-		//
-		'uses' => 'AppUserController@refreshToken',
-	]);
+    $api->get('refreshToken', [
+        //路由别名
+        'as' => 'AppUserController.refreshToken',
+        //
+        'uses' => 'AppUserController@refreshToken',
+    ]);
 
 	$api->group(['middleware' => ['userChangeMidleware']], function ($api) {
 		$api->post('adminLogin', [
@@ -219,14 +219,14 @@ $api->version('v1', [
 		$api->post('adminLogout', [
 			//路由别名
 			'as' => 'AppUserController.adminLogout',
-			//mergeChunks
+			//
 			'uses' => 'AppUserController@logout',
 		]);
 
 		$api->post('adminRegister', [
 			//路由别名
 			'as' => 'AppUserController.adminRegister',
-			//mergeChunks
+			//
 			'uses' => 'AppUserController@store',
 		]);
 	});

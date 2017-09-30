@@ -9,11 +9,18 @@ namespace App\Http\Controllers\Api\V1;
 
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\V1\UserOriFilesController;
 use Illuminate\Support\Facades\Storage;
+use App\Models\UserOriFiles;
 
 class UploadController extends BaseController
 {
+	private $userOriFiles;
+
+	public function __construct(UserOriFiles $userOriFiles)
+	{
+		$this->userOriFiles = $userOriFiles;
+	}
+
 	//获取用户的所有信息
 	public function index(Request $request)
 	{
@@ -75,10 +82,9 @@ class UploadController extends BaseController
 				}
 				@fclose($out);
 				//向用户资源表中写入一条数据
-				$UserOriFilesController = new UserOriFilesController();
 				$file_url = str_replace(config('uploadFile.USER_ORI_FILE_SERVICE_DEFAULT_PATH'),config('uploadFile.USER_ORI_FILE_CACHE_URL'),$outPath);
 				$fileParams = $fileParams + ['file_url'=>$file_url];
-				$UserOriFilesController->staticStore($fileParams);
+				$this->staticStore($fileParams);
 				$response = [
 					'success' => true,
 					'file_id' => $chunks
@@ -195,6 +201,28 @@ class UploadController extends BaseController
 		}else{
 			return ['code'=>204,'msg'=>'不能断点续传'];
 		}
+	}
+
+
+	public function staticStore($resArr){
+
+		$validator = \Validator::make($resArr,[
+			'file_name'=>'required',
+			'file_size'=>'required|numeric',
+			'file_type' => 'required',
+			'file_url' => 'required',
+		]);
+		if($validator->fails()){
+			return $this->errorBadRequest($validator);
+		}
+
+		$user_info = \Auth::user()->toArray();
+
+		$attributes = ['author_id' => $user_info['uid'],'author'=>$user_info['nick']] + $resArr;
+
+		$userOriFiles = $this->userOriFiles->create($attributes);
+
+		return $this->response->created();
 	}
 
 }

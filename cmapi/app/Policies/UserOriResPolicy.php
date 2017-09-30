@@ -20,7 +20,7 @@ class UserOriResPolicy
         //
     }
 	//修改资源的权限
-	public function update(UserOriFiles $userOriFiles,User $user){
+	public function update(User $user,UserOriFiles $userOriFiles){
 		return $user->uid === $userOriFiles->author_id;
 	}
 	//删除资源的权限

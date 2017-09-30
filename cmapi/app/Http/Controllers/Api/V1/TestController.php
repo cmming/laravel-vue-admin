@@ -4,6 +4,12 @@ namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use JWTAuth;
+
+use Illuminate\Http\Response;
+
+use Symfony\Component\HttpFoundation\HeaderBag as Headers;
+
 
 class TestController extends BaseController
 {
@@ -30,9 +36,15 @@ class TestController extends BaseController
 	}
 
 	//测试获取 临时文件文件后缀
-	public function test()
+	public function test(Request $request)
 	{
-		return $this->get_tmp_part();
+		//
+//		$old_token = JWTAuth::getToken();
+//		JWTAuth::decode();
+//		$token = JWTAuth::refresh($old_token);
+		dd("work");
+
+
 	}
 	public function get_tmp_part(){
 		$files = Storage::disk('uploadsVideoTemp')->allFiles();
@@ -43,4 +55,15 @@ class TestController extends BaseController
 		asort($files);
 		return ['code'=>203,'msg'=>'断点续传','chunk'=>end($files)];
 	}
+	//测试自动 token 自动刷新 接口
+	public function refreshToken(){
+		$Response = new Response();
+//		dd( json_encode($Response));
+		$Response->header('Authorization', 'Bearer ' . 123);
+		$responseContent = ['setted' => 'true'];
+
+		$Response->setContent($responseContent);
+		return $Response;
+	}
+
 }

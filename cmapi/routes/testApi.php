@@ -17,9 +17,16 @@ $api->post('register', [
 	//
 	'uses' => 'AuthenticateController@store',
 ]);
+
 $api->get('test', [
 	//路由别名
 	'as' => 'test.test',
 	//
 	'uses' => 'TestController@test',
 ]);
+
+$api->group(['middleware' => ['jwt.refresh']],function($api){
+	$api->get('cm',function(){
+		return 'cm';
+	});
+});

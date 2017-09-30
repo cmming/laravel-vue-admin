@@ -17,7 +17,8 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
 //        'App\Model' => 'App\Policies\ModelPolicy',
 		//将定义的的策略模式注册到模型中 去
-		'App\Models\UserOriFiles' =>'App\Policies\UserOriResPolicy'
+//		'\App\Models\UserOriFiles' =>'\App\Policies\UserOriResPolicy'
+		\App\Models\UserOriFiles::class =>\App\Policies\UserOriResPolicy::class
     ];
 
     /**

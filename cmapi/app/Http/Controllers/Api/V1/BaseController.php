@@ -59,7 +59,7 @@ class BaseController extends Controller
 
     use Helpers;
 
-    // 返回错误的请求
+    // 返回错误的请求  资源异常 422
     protected function errorBadRequest($validator)
     {
         // github like error messages

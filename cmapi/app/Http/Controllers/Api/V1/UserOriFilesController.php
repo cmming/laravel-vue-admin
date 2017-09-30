@@ -15,6 +15,14 @@ use JWTAuth;
 
 class UserOriFilesController extends BaseController
 {
+	private $userOriFiles;
+
+	public function __construct(UserOriFiles $userOriFiles)
+	{
+		$this->userOriFiles = $userOriFiles;
+	}
+
+
 	//获取用户的所有信息
 	public function index(){
 		//添加搜索条件
@@ -29,17 +37,16 @@ class UserOriFilesController extends BaseController
 //			$search_arr['etime'] = request('etime');
 //		}
 
-		$token = JWTAuth::getToken();
-		$id = JWTAuth::getPayload($token)->get('sub');
-		$search_arr['author_id'] = $id;
+		$id = \Auth::id();
+
 		//多条件模糊查询
-		$UserOriTmp = UserOriFiles::where(function($query)use($id){
+		$UserOriTmp = $this->userOriFiles->where(function($query)use($id){
 			$query->where('file_name','like','%'.request('file_name').'%')->where('author_id','=',$id);
 		})->paginate();
-//		$UserOriTmp = UserOriFiles::where($search_arr)->paginate();
+
 		return $this->response->paginator($UserOriTmp, new UserOriFilesTransformer());
 	}
-	//获取一个用户的详情
+	//获取一个用户资源的详情
 	public function show($id)
 	{
 		$validator = \Validator::make(['id'=>$id],[
@@ -49,10 +56,12 @@ class UserOriFilesController extends BaseController
 		if($validator->fails()){
 			return $this->errorBadRequest($validator);
 		}
-		$isExist=UserOriFiles::where('id','=',$id)->exists();
+		//findOrFail 根据主键取出一条数据或抛出异常
+		$isExist=$this->userOriFiles->find($id);
+
 		if($isExist){
 			// item 是返回单个数据
-			return $this->response->item(UserOriFiles::find($id), new UserOriFilesTransformer());
+			return $this->response->item($isExist, new UserOriFilesTransformer());
 		}else{
 			$result=array();
 			$result['code']=201;
@@ -85,18 +94,24 @@ class UserOriFilesController extends BaseController
 				'file_type' => $file_type,
 				'file_url' => $file_url,
 		];
-		$user = UserOriFiles::create($attributes);
-
-		return $this->response->created();
+		$userOriFile = $this->userOriFiles->create($attributes);
+		$location = dingo_route('v1', 'userOriFiles.show', $userOriFile->id);
+		// 协议里是这么返回，把资源位置放在header里面
+		return $this->response->created($location);
 	}
 	//删除
 	public function destroy($id){
-
 		$validator = \Validator::make(['id'=>$id],[
 				'id'=>'numeric|unique:t_vr_user_ori_resources',
 		]);
 		if($validator->fails()){
 			return $this->errorBadRequest($validator);
+		}
+		$userOriFile = UserOriFiles::find($id);
+		//权限验证
+		if (\Gate::denies('delete', $userOriFile)){
+			// 禁止访问
+			return $this->response->errorForbidden('禁止访问');
 		}
 		$isExists = UserOriFiles::where('id','=',$id)->exists();
 		if($isExists){
@@ -107,47 +122,25 @@ class UserOriFilesController extends BaseController
 
 	}
 
-	public function staticStore($resArr){
-
-		$validator = \Validator::make($resArr,[
-			'file_name'=>'required',
-			'file_size'=>'required|numeric',
-			'file_type' => 'required',
-			'file_url' => 'required',
-		]);
-		if($validator->fails()){
-			return $this->errorBadRequest($validator);
-		}
-		$token = JWTAuth::getToken();
-		$id = JWTAuth::getPayload($token)->get('sub');
-
-		//获取用户的名字
-		$user_info = User::find($id)->toArray();
-
-		$attributes = ['author_id' => $id,'author'=>$user_info['nick']] + $resArr;
-
-		$user = UserOriFiles::create($attributes);
-		return $this->response->created();
-	}
-
 	public function update($id){
 		//侧路模式的权限判断
-
-//		$userOriFile = UserOriFiles::find($id)->author_id;
-//		$isok = $this->authorizeForUser(\Auth::user(),'update',$userOriFile);
-//		dd($isok);
+		$userOriFile = $this->userOriFiles->findOrFail($id);
+		//策略模式 认证用户权限  （不会自定义控制异常，所以不用之中）
+		//$this->authorize('update',$userOriFile);
+		if (\Gate::denies('update', $userOriFile)){
+			// 禁止访问
+			return $this->response->errorForbidden('禁止访问');
+		}
 		$validator = \Validator::make(request(['file_name']),[
 			'file_name'=>'required|string',
 		]);
 		if($validator->fails()){
 			return $this->errorBadRequest($validator);
 		}
-		$userOriFiles =UserOriFiles::findOrFail($id);
-		$isUpdate = $userOriFiles->update(request(['file_name']));
-		if($isUpdate){
-			return $this->response->item($userOriFiles, new UserOriFilesTransformer());
-		}else{
-			return $this->response->errorNotFound();
-		}
+
+		$userOriFile->update(request(['file_name']));
+
+		return $this->response->noContent();
+
 	}
 }

@@ -113,6 +113,24 @@ create table t_vr_user_ori_tmp (
     1.书写策略模式文件
     2.注册策略模式
     3.使用策略（controlle :中使用的规则：$this->authorize(policyName,changeModelName)） $this->authorize('update',$post);
+    
+    
+    
 
+接口响应数据规范
+
+    充分http 状态码
+        1.200 用于list(paginator) detail(item)
+        
+        2.201 用于创建 store created->($location = dingo_route('v1', 'posts.show', $post->id);) 
+        
+        3.204 用于跟新 update noContent() 和 destroy
+
+
+
+用户权限控制
+        1.登录权限
+        2.policy 策略细化控制 -> controller 中可以用 authorize 方式控制，同时也可以用 Gate
+        3.gate 模型化控制
 
 

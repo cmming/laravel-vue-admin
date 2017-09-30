@@ -35,7 +35,9 @@ class AuthenticateController extends BaseController
         //return response()->json(compact('token'));
         $tokenInfo = [
             'token' => $token,
+			//过期时间默认使用 的缓存文件 中的配置
             'expired_at' => Carbon::now()->addMinutes(config('jwt.ttl'))->toDateTimeString(),
+			//刷新时间的作用是在这个刷新时间以内 自动刷新 token
             'refresh_expired_at' => Carbon::now()->addMinutes(config('jwt.refresh_ttl'))->toDateTimeString(),
         ];
         $user = User::where('email', $credentials['email'])->first();
@@ -77,12 +79,10 @@ class AuthenticateController extends BaseController
         $user = User::create($attributes);
 
         return ['msg'=>'注册成功！','code'=>200];
-        // 用户注册成功后发送邮件
-//        dispatch(new SendRegisterEmail($user));
-
-        // 201 with location
-//        $location = dingo_route('v1', 'users.show', $user->id);
-
-        // 让user默认返回token数据
     }
+	public function refreshToken(){
+		$old_token = JWTAuth::getToken();
+		$newToken = JWTAuth::refresh($old_token);
+		return response(['刷新token'], 401)->header('Authorization', 'Bearer '.$newToken);
+	}
 }
