@@ -94,6 +94,16 @@ const userOriTmps = {
     list(t, data, fn) {
         t.$http.get('/userOriTmps?' + data).then(fn);
     },
+
+    /**
+     * 
+     * 删除一个用户申请资源模块 delete DELETE
+     * @param {any} data 
+     * @param {any} fn 
+     */
+    delete(t, data, fn) {
+        t.$http.delete('/userOriTmps/' + data ).then(fn);
+    },
 }
 
 

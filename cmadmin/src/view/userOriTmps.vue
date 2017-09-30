@@ -21,13 +21,13 @@
                 </div> -->
                 <div class="col-md-6 col-sm-12">
                     <span class="search_time_title">创建时间：</span>
-                    <el-date-picker @change="setStartDate" type="date" placeholder="开始日期" v-model="searchData.btime"></el-date-picker>
+                    <el-date-picker @change="setStartDate" type="date" placeholder="开始日期" v-model="userOriTmp.searchData.btime"></el-date-picker>
 
-                    <el-date-picker @change="setEndDate" type="date" placeholder="结束日期" v-model="searchData.etime"></el-date-picker>
+                    <el-date-picker @change="setEndDate" type="date" placeholder="结束日期" v-model="userOriTmp.searchData.etime"></el-date-picker>
                 </div>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="电影名称标题" v-model="searchData.title">
+                        <input type="text" class="form-control" placeholder="电影名称标题" v-model="userOriTmp.searchData.title">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-success no-shadow" tabindex="-1" @click="search">搜索</button>
                             <button type="button" class="btn btn-success dropdown-toggle no-shadow" data-toggle="dropdown" tabindex="-1" @click="search_tar = !search_tar">条件</button>
@@ -95,7 +95,7 @@
                     </tbody>
                 </table>
                 <!--分页组件-->
-                <v-page :curPage="curpage" :allPage="userOriTmp.allPage" @btn-click='listen'></v-page>
+                <v-page :curPage="userOriTmp.curpage" :allPage="userOriTmp.allPage" @btn-click='listen'></v-page>
             </div>
             <div v-show="!userOriTmp.allPage">
                 <div class="alert" ng-hide="orderView">
@@ -128,12 +128,7 @@
                     { 'name': '收费配置', 'val': 1 },
                     { 'name': '可用状态', 'val': 1 },
                 ],
-                dataList: [],
                 chooseItem: '',
-                searchData: { "page": '1', "btime": "", "etime": "", "title": "" },
-                allPage: '',
-                curpage: 1,
-                restaurants: [],
                 search_tar: false
 
             }
@@ -165,28 +160,13 @@
                 this.$store.dispatch('GETUSERORITMPLIST', paramsObj);
             },
             del(index) {
-                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                this.$confirm('此操作将永久删除该数据文件, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    var resData = {};
-                    resData._method = 'delete', self = this;
-                    allAjax.userOriTmps.delete.call(this, index, function (response) {
-                        // console.log(response.status);
-                        if (response.data.code == 200) {
-                            self.$message({
-                                type: "success",
-                                message: '数据删除成功！'
-                            });
-                            self.getData();
-                        } else {
-                            this.$message({
-                                type: 'error',
-                                message: response.data.msg
-                            });
-                        }
-                    });
+                    var paramObj = { vue: this, resData: index };
+                    this.$store.dispatch('DELETEUSERORITMP', paramObj);
                 }).catch(() => {
                     this.$message({
                         type: 'info',
@@ -202,16 +182,16 @@
             },
             //日期的格式化
             setStartDate(val) {
-                this.searchData.btime = val;
+                this.userOriTmp.searchData.btime = val;
             },
             setEndDate(val) {
-                this.searchData.etime = val;
+                this.userOriTmp.searchData.etime = val;
             },
             //添加搜索
             search() {
 
-                var resData = this.getDataFormat(this.searchData), self = this;
-                var paramsObj = { vue: this, resData: this.getDataFormat(this.searchData) };
+                var resData = this.getDataFormat(this.userOriTmp.searchData), self = this;
+                var paramsObj = { vue: this, resData: this.getDataFormat(this.userOriTmp.searchData) };
                 this.$store.dispatch('GETUSERORITMPLIST', paramsObj);
             }
         }

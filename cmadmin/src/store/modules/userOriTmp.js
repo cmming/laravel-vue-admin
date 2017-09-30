@@ -94,6 +94,24 @@ const actions = {
             // 发送一个 mutation 对 view数据 进行修改
             commit(SETUSERORITMPLIST, res);
         });
+    },
+    // 删除 
+    DELETEUSERORITMP({ commit }, params) {
+        userOriFiles.delete(params.vue, params.resData, function (response) {
+            //成功的回调
+            console.log(response.status);
+            if (response.status == 204) {
+                // 再次请求一下 commit
+                // 格式化 请求参数
+                var resData = params.vue.getDataFormat(state.userOriTmp.searchData);
+                console.log(resData);
+                // 再次请求一下 commit
+                userOriTmps.list(params.vue, params.resData, function (res) {
+                    // 发送一个 mutation 对 view数据 进行修改
+                    commit(SETUSERORITMPLIST, res);
+                });
+            }
+        })
     }
 
 }
