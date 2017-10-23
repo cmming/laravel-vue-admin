@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\UserPremission;
 
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 
@@ -30,6 +31,13 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies($gate);
 
+		//为 用户角色 进行门卫注册 定义
+		$UserPremissions = UserPremission::all();
+		foreach($UserPremissions as $userPremission){
+			Gate::define($userPremission->name, function ($user)use($userPremission){
+				return $user->hasPremission($userPremission);
+			});
+		}
         //
     }
 }

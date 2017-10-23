@@ -221,4 +221,9 @@ return [
 
     ],
 
+	/**
+	 * 目录的缓存配置文件
+	 */
+	'menuConfig' =>env('USER_MENU_TMP_PATH'),
+
 ];

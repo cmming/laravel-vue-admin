@@ -121,7 +121,7 @@ return [
     |
     */
 	//日志的类型
-    'log' => env('APP_LOG', 'single'),
+    'log' => env('APP_LOG', 'daily'),
 	//错误等级
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 

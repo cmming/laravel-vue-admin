@@ -58,7 +58,7 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * Define the "api" routes for the application.
-     *
+     *定义 api 的路由
      * These routes are typically stateless.
      *
      * @return void

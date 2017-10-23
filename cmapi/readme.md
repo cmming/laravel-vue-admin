@@ -123,8 +123,12 @@ create table t_vr_user_ori_tmp (
         1.200 用于list(paginator) detail(item)
         
         2.201 用于创建 store created->($location = dingo_route('v1', 'posts.show', $post->id);) 
+            post 创建 
+            
         
         3.204 用于跟新 update noContent() 和 destroy
+            put/patch    更新
+            delete       删除
 
 
 
@@ -132,5 +136,14 @@ create table t_vr_user_ori_tmp (
         1.登录权限
         2.policy 策略细化控制 -> controller 中可以用 authorize 方式控制，同时也可以用 Gate
         3.gate 模型化控制
+        
+        
+权限资源化处理
+        1.premissionReources
+        
+        
+前端控制权限的方式只能通过后台的status_code，进行判断如果是 越权的status_code 就重定向。
+
+
 
 

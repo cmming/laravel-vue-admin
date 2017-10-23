@@ -7,87 +7,61 @@
  */
 namespace App\Http\Controllers\Api\V1;
 
-use App\User;
+use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 use App\Transformers\UserTransformer;
 
 class UserController extends BaseController
 {
+	protected $user;
+	protected $userRole;
+
+	public function __construct(User $user,UserRole $userRole)
+	{
+		$this->user = $user;
+		$this->userRole = $userRole;
+	}
+
 	//获取用户的所有信息
 	public function index(){
-//		$users = User::orderBy('created_at','desc')->paginate(10);
-//		return $users;
-		$users = User::paginate();
+		$users = $this->user->paginate();
 
 		return $this->response->paginator($users, new UserTransformer());
 	}
-	//获取一个用户的详情
-	public function show($id)
-	{
-		$validator = \Validator::make(['id'=>$id],[
-			'id'=>'required|numeric'
-		]);
-
-		if($validator->fails()){
-			return $this->errorBadRequest($validator);
+	public function roles($id){
+		$roles = [];
+		$userRoles = $this->user->find($id)->roles;
+		foreach($userRoles as $userRole){
+			$roles[] = $userRole['id'];
 		}
-		$user = User::findOrFail($id);
-
-		return $this->response->item($user, new UserTransformer());
+		return $this->response->array($roles);
 	}
-	//获取 添加
-	public function store(Request $request){
-		$validator = \Validator::make($request->all(),[
-			'name'=>'required|string',
-			'email'=>'required|email|unique:users',
-			'password' => 'required',
+	public function storeRoles($id){
+		$validator = \Validator::make(request(['roles']),[
+			'roles'=>'required|array',
 		]);
 		if($validator->fails()){
 			return $this->errorBadRequest($validator);
 		}
+		//当前user 集合
+		$user = $this->user->find($id);
+		$userRoles = $user->roles;
+		//接受的参数
+		$checkUserRoles = $this->userRole->findMany(request('roles'));
 
-		$email = request('email');
-		$password = request('password');
+		//添加的 角色
+		$addRoles = $checkUserRoles->diff($userRoles);
 
-		$attributes = [
-				'email' => $email,
-				'name' => request('name'),
-				'password' => app('hash')->make($password),
-		];
-		$user = User::create($attributes);
-
-		return $this->response->created();
-	}
-	//更新
-	public function update($id){
-		$validator = \Validator::make(request(['name','email']),[
-				'name'=>'required|string',
-//				'email'=>'required|email|unique:users',
-				'email'=>'required|email',
-		]);
-		if($validator->fails()){
-			return $this->errorBadRequest($validator);
+		foreach($addRoles as $addRole){
+			$user->addRoles($addRole);
 		}
-		$user =User::findOrFail($id);
-		$user->update(request(['name','email']));
-
-		return $this->response->item($user, new UserTransformer());
-	}
-	//删除
-	public function destroy($id){
-
-		$validator = \Validator::make(['id'=>$id],[
-				'id'=>'numeric',
-		]);
-		if($validator->fails()){
-			return $this->errorBadRequest($validator);
-		}
-		$isExists = User::where('id','=',$id)->exists();
-		if($isExists){
-			User::destroy($id);
+		//减少的角色
+		$deleteRoles  = $userRoles->diff($checkUserRoles);
+		foreach ($deleteRoles as $deleteRole) {
+			$user->deleteRole($deleteRole);
 		}
 
 		return $this->response->noContent();
-
 	}
 }

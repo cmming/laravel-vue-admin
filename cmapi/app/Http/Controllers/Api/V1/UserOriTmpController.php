@@ -30,17 +30,11 @@ class UserOriTmpController extends BaseController
 
 	//获取用户的所有信息
 	public function index(){
-//		$token = JWTAuth::getToken();
-//		$id = JWTAuth::getPayload($token)->get('sub');
 		$id = \Auth::id();
 		//添加搜索 条件
 		$UserOriTmp = $this->userOriTmp->where(function($query)use($id){
 			$query->where('title','like','%'.request('title').'%')->where('authorid','=',$id);
 		})->paginate();
-//		$UserOriTmp = UserOriTmp::where(function($query)use($id){
-//			$query->where('title','like','%'.request('title').'%')->where('authorid','=',$id);
-//		})->paginate();
-//		$UserOriTmp = UserOriTmp::where('authorid','=',$id)->paginate();
 		return $this->response->paginator($UserOriTmp, new UserOriTmpTransformer());
 	}
 	//获取一个用户的详情
@@ -126,7 +120,6 @@ class UserOriTmpController extends BaseController
 			//资源不存在
 			return $this->response->errorNotFound();
 		}
-
 	}
 	//删除
 	public function destroy($id){

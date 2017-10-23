@@ -16,7 +16,7 @@ class BaseModel extends Model
 
 	protected $fillable = ['author_id','file_name','file_size','file_type','file_url',
 		'tid','title','fname','des','att','down_url','fsize','ftype','authorid','author',
-		'uid','mid'
+		'uid','mid',
 	];
 	protected $hidden = ['ad_pwd'];
 
