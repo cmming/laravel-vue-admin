@@ -12,7 +12,7 @@ import {
     SETUSERORITMPLIST,
     DELETEUSERORITMP,
     USERORIDETAIL
-} from "./types.js"
+} from "../types"
 
 // 1. 定义 state 
 const state = {

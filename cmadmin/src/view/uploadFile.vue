@@ -21,7 +21,6 @@
                                 </div>
                                 <div class="queueList">
                                     <div id="dndArea" class="placeholder">
-                                        <!-- <div id="filePicker" v-webUploader>选择文件</div> -->
                                         <div id="filePicker">选择文件</div>
                                         <p>或将视频拖到这里</p>
                                     </div>
@@ -374,7 +373,6 @@ export default {
                 $('#btns').hide();
                 $('#thelist').html('');
                 $('.queueList').html(`<div id="dndArea" class="placeholder">
-                                    <!-- <div id="filePicker" v-webUploader>选择文件</div> -->
                                     <div id="filePicker">选择文件</div>
                                     <p>或将视频拖到这里</p>
                                 </div>`);

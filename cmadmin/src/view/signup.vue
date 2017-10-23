@@ -77,7 +77,6 @@
     <!-- ./sign-in-wrapper -->
 </template>
 <script>
-    import allAjax from '../api/request.js'
     import { mapGetters } from 'vuex'
     export default {
         data() {
@@ -99,14 +98,14 @@
             signup() {
                 var self=this;
                 this.$validator.validateAll().then(() => {
-                    allAjax.userData.signup.call(this, {'type':"admin",'formdata':this.formData}, function (response) {
-                            console.log(response.data);
-                        if (response.data.code === "200") {
-                            self.$router.push('login');
-                        }
-                        else {
-                        }
-                    });
+                    // allAjax.userData.signup.call(this, {'type':"admin",'formdata':this.formData}, function (response) {
+                    //         console.log(response.data);
+                    //     if (response.data.code === "200") {
+                    //         self.$router.push('login');
+                    //     }
+                    //     else {
+                    //     }
+                    // });
                 }).catch(() => {
                     
                     

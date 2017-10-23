@@ -1,6 +1,37 @@
 // 将所有的请求写在这里
 // 分模块导出
 
+// TOKEN 相关的
+
+const token = {
+    /**
+     * admin登录接口
+     * 
+     * @param {json} data 发送的数据
+     * @param {Function} fn 接口的成功回调函数
+     */
+    adminLogin(t, data, fn) {
+        t.$http.post('/adminLogin', data).then(fn);
+    },
+    /**
+     * 退出登录
+     * 
+     * @param {json} data 发送的数据
+     * @param {Function} fn 接口的成功回调函数
+     */
+    logout(t, data, fn) {
+        t.$http.get('/adminLogout').then(fn);
+    },
+    /**
+    * 刷新token 
+    * 
+    */
+    refreshToken(t) {
+        t.$http.get('/refreshToken');
+    },
+
+}
+
 //读者的资源请求
 const userOriFiles = {
     /**
@@ -102,12 +133,160 @@ const userOriTmps = {
      * @param {any} fn 
      */
     delete(t, data, fn) {
-        t.$http.delete('/userOriTmps/' + data ).then(fn);
+        t.$http.delete('/userOriTmps/' + data).then(fn);
+    },
+}
+
+const userPremission = {
+    /**
+    * 
+    * 获取用户权限列表 get
+    * @param {any} data 
+    * @param {any} fn 
+    */
+    list(t, data, fn) {
+        t.$http.get('/userPremissions?' + data).then(fn);
+    },
+
+    /**
+    * 
+    * 添加一个用户权限
+    * @param {any} data 
+    * @param {any} fn 
+    */
+    store(t, data, fn) {
+        t.$http.post('/userPremissions', data).then(fn);
+    },
+    
+     /**
+     * 
+     * 一个用户权限的详情
+     * @param {any} data 
+     * @param {any} fn 
+     */
+    show(t, data, fn) {
+        t.$http.get('/userPremissions/' + data).then(fn);
+    },
+
+    /**
+     * 
+     * 更新一个用户权限
+     * @param {any} data 
+     * @param {any} fn 
+     */
+    update(t, index, data, fn) {
+        t.$http.put('/userPremissions/' + index, data).then(fn);
+    },
+
+}
+
+
+// 用户角色模块
+
+const userRole = {
+    /**
+    * 
+    * 获取用户角色列表 get
+    * @param {any} data 
+    * @param {any} fn 
+    */
+    list(t, data, fn) {
+        t.$http.get('/userRoles?' + data).then(fn);
+    },
+
+     /**
+    * 
+    * 添加一个用户角色
+    * @param {any} data 
+    * @param {any} fn 
+    */
+    store(t, data, fn) {
+        t.$http.post('/userRoles', data).then(fn);
+    },
+
+    show(t, data, fn) {
+        t.$http.get('/userRoles/' + data).then(fn);
+    },
+    update(t, index, data, fn) {
+        t.$http.put('/userRoles/' + index, data).then(fn);
+    },
+    /**
+     * 获取 用户角色拥有的权限
+     * 
+     */
+     premissions(t, data, fn) {
+        t.$http.get('/userRoles/'+data+'/premissions').then(fn);
+    },
+    /**
+     * 保存角色权限
+     * @Author   cm
+     * @DateTime 2017-10-11
+     * @param    {[type]}   t    [description]
+     * @param    {[type]}   data [description]
+     * @param    {Function} fn   [description]
+     */
+    storePremisison(t, index,data, fn) {
+        t.$http.post('/userRoles/'+index+'/premissions', data).then(fn);
+    },
+
+    
+}
+
+// 用户模块
+const user = {
+     list(t, data, fn) {
+        t.$http.get('/users?' + data).then(fn);
+    },
+    roles(t, data, fn){
+        t.$http.get('/user/'+data+'/roles').then(fn);
+    },
+    storeRoles(t, index,data, fn){
+        t.$http.post('/user/'+index+'/roles', data).then(fn);
+    }
+}
+
+/**
+ * 目录文件 接口
+ * @type {Object}
+ */
+const menu = {
+    list(t, fn) {
+        t.$http.get('/menus').then(fn);
+    },
+    delete(t, data, fn) {
+        t.$http.delete('/menus/' + data).then(fn);
+    },
+    update(t, data, fn) {
+        t.$http.put('/menus', data).then(fn);
+    },
+    store(t, data, fn) {
+        t.$http.post('/menus', data).then(fn);
+    },
+    userMenus(t, fn) {
+        t.$http.get('/userMenus').then(fn);
+    },
+
+}
+
+
+//权限资源配置
+const premissionsResources = {
+    premissonResources(t, data, fn) {
+        t.$http.get('/premissonResources/' + data).then(fn);
+    },
+    storePremissonResources(t, data, fn) {
+        t.$http.post('/premissonResources',data).then(fn);
     },
 }
 
 
 export {
+    token,
     userOriFiles,
     userOriTmps,
+    userPremission,
+    userRole,
+    user,
+    menu,
+    premissionsResources
 };

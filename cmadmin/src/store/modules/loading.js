@@ -1,6 +1,6 @@
 // 所有请求的状态管理
 
-import * as types from './types'
+import * as types from '../types'
 
 // 1.定义页面的数据 通过自定义 或者 asoist获取
 const state = {

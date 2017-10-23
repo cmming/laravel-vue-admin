@@ -1,9 +1,9 @@
 <template>
-    <div class="modal fade in showModal" id="myModal">
+    <div class="modal fade in" id="myModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" @click='close'>
 					×
 				</button>
                     <h4 class="modal-title" id="myModalLabel">
@@ -16,7 +16,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" @click='close'>关闭
 				</button>
-                    <button type="button" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" @click='close'>
 					提交更改
 				</button>
                 </div>
@@ -28,16 +28,26 @@
 </template>
 <script>
     export default{
-        props:['modalData'],
-        mounted(){
-            console.log(this.modalData);
-            console.log('1');
+        data(){
+            return {
+            }
         },
+        props:['isShow'],
         methods:{
             close:function(){
                 var modalClassName=document.getElementById('myModal').className='modal fade in';
-            }
+            },
         },
+        watch:{
+            isShow:function(val){
+                if(!val){
+                    var modalClassName=document.getElementById('myModal').className='modal fade in';
+                }else{
+                    var modalClassName=document.getElementById('myModal').className='modal fade in showModal';
+                }
+                this.$emit("callBackIsOpen",true);
+            }
+        }
     }
 </script>
 <style scoped>

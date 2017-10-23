@@ -177,8 +177,6 @@
 </style>
 
 <script>
-    import breadcrumb from '../components/common/breadcrumb.vue'
-    import errorMsg from '../components/common/formError.vue'
     import { mapGetters, mapActions } from 'vuex'
     export default {
         data() {
@@ -193,10 +191,6 @@
                 isShowVideo: false,
 
             }
-        },
-        components: {
-            'v-breadcrumb': breadcrumb,
-            'v-errorMsg': errorMsg
         },
         computed: {
             ...mapGetters([

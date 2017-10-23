@@ -58,7 +58,7 @@ var cbs = {
     // 响应拦截器
     responseInterceptors: {
         fn: function (response) {
-            console.log(response);
+            // console.log(response);
             //根据请求头部进行token 的主动刷新判断
             if (response.headers.lastmodified) {
                 var lastmodified = response.headers.lastmodified;
@@ -78,10 +78,6 @@ var cbs = {
                 }
             }
             // 如果响应头部 有 Authorization 就自动 更新 token
-            if (response.headers.Authorization) {
-                localStorage.token = response.headers.Authorization;
-            }
-            //成功的响应码 200-299
             if (response.headers.Authorization) {
                 localStorage.token = response.headers.Authorization;
             }
@@ -140,6 +136,11 @@ var cbs = {
                         localStorage.removeItem('token');
                         window.location.href = '#/login';
                         break;
+
+                    case 405:
+                        errorAlertTitle = '请求错误' + errorStatus;
+                        errorAlertMsg = '请求方式错误'
+                        break;
                     case 422:
                         errorAlertTitle = '前台非法输入字符';
                         if (error.response.data.errors) {
@@ -147,20 +148,7 @@ var cbs = {
                                 errorAlertMsg += (error.response.data.errors[i]['field'] + error.response.data.errors[i]['code']);
                             }
                         }
-                        window.location.href = '#/422';
-                        break;
-                    case 405:
-                        errorAlertTitle = '请求错误' + errorStatus;
-                        errorAlertMsg = '请求方式错误'
-                        break;
-                    case 422:
-                        var errorMsg = '错误码：' + errorStatus;
-                        console.log(error.response.data.errors);
-                        if (error.response.data.errors) {
-                            for (let i in error.response.data.errors) {
-                                errorMsg += (error.response.data.errors[i]['field'] + error.response.data.errors[i]['code']);
-                            }
-                        }
+                        // window.location.href = '#/422';
                         break;
                     default:
                         errorAlertTitle = '未知错误' + errorStatus;

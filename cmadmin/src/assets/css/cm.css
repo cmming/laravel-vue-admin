@@ -189,3 +189,13 @@ select.styled-select {
     font-size: 18px;
     vertical-align: sub;
 }
+.el-card{
+    overflow: inherit;
+}
+@media screen and (max-width: 513px) {
+    .el-date-range-picker__content{
+        width: 51%;
+        margin-left: 37% !important;
+        border: 1px solid #dfdfdf;
+    }
+}

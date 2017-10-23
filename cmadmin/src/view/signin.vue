@@ -42,8 +42,8 @@
 				</div>
 
 				<div class="m-top-md p-top-sm text-center">
-					<span v-show="requestError" class="err_msg">
-						{{errorMsg}}
+					<span v-show="token.requestError" class="err_msg">
+						{{token.errorMsg}}
 					</span>
 				</div>
 
@@ -60,14 +60,17 @@
 	</div>
 </template>
 <script>
-	import allAjax from '../api/request.js'
+	import { mapGetters } from 'vuex'
 	export default {
 		// 到时候还可以依据不同的情况返回不同的数据
 		computed: {
 			loading:function(){
 				// 模块名称
 				return this.$store.state.loading.loading
-			}
+			},
+			...mapGetters([
+				'token'
+            ]),
 		},
 		data() {
 			return {
@@ -77,30 +80,15 @@
 					password: "",
 				},
 				loadding: false,
-				requestError: false,
-				errorMsg: ""
 			}
 		},
 		methods: {
 			login() {
 				this.$validator.validateAll().then(() => {
-                    // eslint-disable-next-line
-					var resData = this.formData;
-					console.log(resData);
 					this.loadding = true;
-					var self = this;
-					allAjax.userData.adminLogin.call(this, resData, function (response) {
-						if(response.data.code == 200){
-							localStorage.token = response.data.data.token;
-							localStorage.expired_at = response.data.data.expired_at;
-							localStorage.refresh_time = response.data.data.refresh_time;
-							localStorage.refresh_expired_at = response.data.data.refresh_expired_at;
-							self.$router.push('main');
-						}else{
-							self.requestError = true;
-							self.errorMsg = response.data.error;
-						}
-					});
+					// 登录 进行初始化 token
+					var paramsObj = {vue:this,resData:this.formData};
+					this.$store.dispatch('SETTOKEN',paramsObj);
                 }).catch(() => {
                     // eslint-disable-next-line
                     // alert('未通过');

@@ -119,12 +119,11 @@
         </header>
 </template>
 <script>
-    import allAjax from '../../api/request.js'
     import {mapGetters,mapActions} from 'vuex'
     export default {
         data() {
             return {
-                b: "",
+                // b: "",
                 // 手机时候右边的下拉
                 showRigthPhone: false,
                 showRigthPc:false,
@@ -149,18 +148,8 @@
             },
             // 退出登录
             siginOut:function(){
-                var self =this;
-                localStorage.removeItem('token');
-                self.$router.push('/login');
-                    allAjax.userData.logout.call(this, function (response) {
-                        console.log(response,response.data.code == 200);
-                        if(response.data.code == 200){
-                            localStorage.removeItem('token');
-                            // this.$store.dispatch('CLEARUSERINFO');
-                            self.$router.push('/login');
-                    }
-                });
-                
+                var paramsObj = {vue:this};
+                this.$store.dispatch('DELETETOKEN',paramsObj);
             }
         }
     }

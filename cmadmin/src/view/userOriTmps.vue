@@ -2,23 +2,12 @@
     <div v-ansyimgpage="{'ansy':2000}">
         <v-breadcrumb :breadcrumbData="toBreadcrumb"></v-breadcrumb>
         <!--数据筛选区域-->
-        <div class="container bg-white padding-lg">
+        <!-- <div class="container bg-white padding-lg"> -->
+        <el-card>
+            
+        
             <div class="row">
                 <div class="col-md-1 col-sm-2 font-600">筛选区：</div>
-                <!-- <div class="col-md-11 col-sm-10 pull-left">
-                    <div class="row">
-                        <div class="col-md-4 col-sm-12">
-                            <span>开始日期：</span>
-                            <el-date-picker type="date" placeholder="选择日期" v-model="searchData.btime"></el-date-picker>
-                        </div>
-
-                        <div class="col-md-4 col-sm-12">
-                            <span>结束日期：</span>
-                            <el-date-picker type="date" placeholder="选择日期" v-model="searchData.etime"></el-date-picker>
-                        </div>
-
-                    </div>
-                </div> -->
                 <div class="col-md-6 col-sm-12">
                     <span class="search_time_title">创建时间：</span>
                     <el-date-picker @change="setStartDate" type="date" placeholder="开始日期" v-model="userOriTmp.searchData.btime"></el-date-picker>
@@ -33,7 +22,6 @@
                             <button type="button" class="btn btn-success dropdown-toggle no-shadow" data-toggle="dropdown" tabindex="-1" @click="search_tar = !search_tar">条件</button>
                             <ul class="dropdown-menu pull-right" :class="{'show_block':search_tar}" role="menu">
                                 <li><a href="javascript:void(0)">电影标题</a></li>
-                                <li><a href="javascript:void(0)">Another action</a></li>
                                 <li><a href="javascript:void(0)">Something else here</a></li>
                             </ul>
                         </div>
@@ -65,7 +53,8 @@
                 <div class="font-600 col-md-1 col-sm-12">控制列:</div>
                 <v-selectForShowCol class="inline-block col-md-11 col-sm-12" :tableHeader="tableHeader"></v-selectForShowCol>
             </div>
-        </div>
+        <!-- </div> -->
+        </el-card>
         <!--数据展示区域-->
 
         <div class="m-top-md bg-white padding-xs" style="overflowX:auto">
@@ -107,7 +96,6 @@
     </div>
 </template>
 <script>
-    import allAjax from '../api/request.js'
     import { mapGetters, mapActions } from 'vuex'
     // 引入图片
     import testSrc from '../assets/images/img11.jpg'

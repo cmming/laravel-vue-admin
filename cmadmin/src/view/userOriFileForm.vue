@@ -48,9 +48,6 @@
 </template>
 
 <script>
-    import breadcrumb from '../components/common/breadcrumb.vue'
-    import errorMsg from '../components/common/formError.vue'
-    import allAjax from '../api/request.js'
     import { mapGetters } from 'vuex'
     export default {
         data() {
@@ -67,10 +64,6 @@
 
             }
         },
-        components: {
-            'v-breadcrumb': breadcrumb,
-            'v-errorMsg': errorMsg
-        },
         computed: mapGetters([
             'userOriFiles'
         ]),
@@ -82,6 +75,8 @@
                 //查询该id的 相关资源的基本信息
                 var paramObj = { vue: this, resData: this.$route.params.id };
                 this.$store.dispatch('GETUSERORIFILEDETAIL', paramObj);
+            }else{
+                this.$route.go(-1);
             }
         },
 
@@ -90,22 +85,8 @@
                 //修改
                 this.$validator.validateAll().then((result) => {
                     if (result) {
-                        // var resData = this.formData;
-                        // resData._method = 'put';
-                        // var self = this;
-                        // console.log(this.$route.params.id);
                         var paramObj = {vue: this, index: this.$route.params.id,resData:this.userOriFiles.details};
                         this.$store.dispatch('SETUSERORIFILEDETAIL',paramObj);
-                        // allAjax.userOriFiles.update.call(this, this.$route.params.id, resData, function (response) {
-                        //     console.log(response.status);
-                        //     if (response.status == 200) {
-                        //         self.$message({
-                        //             type: "success",
-                        //             message: '信息修改成功！'
-                        //         });
-                        //         window.location.href = '#/userOriFiles'
-                        //     }
-                        // });
                         return;
                     }
                     self.$message({

@@ -1,6 +1,6 @@
 
-// import * as types from './types'
-import * as types from './types'
+// import * as types from '../'
+import * as types from '../types'
 
 // 定义数据
 // 获取用户信息 用户信息最好不要弄个vuex管理 应该使用localStorage使用

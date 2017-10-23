@@ -6,9 +6,34 @@ import router from './router'
 
 
 
-import { Loading,Select,Option ,DatePicker,Upload,Button,Autocomplete,Scrollbar,Form,FormItem,Input,Col,Switch,TimePicker,CheckboxGroup,Checkbox,RadioGroup,Radio,Tree,MessageBox,Message } from 'element-ui';
-
-Vue.use(Loading,DatePicker,MessageBox,Message);
+import {
+  Card,
+  Loading,
+  Select,
+  Option,
+  DatePicker,
+  Upload,
+  Button,
+  Autocomplete,
+  Scrollbar,
+  Form,
+  FormItem,
+  Input,
+  Col,
+  Row,
+  Switch,
+  TimePicker,
+  CheckboxGroup,
+  Checkbox,
+  RadioGroup,
+  Radio,
+  Tree,
+  MessageBox,
+  Message,
+  Dialog,
+  Slider
+} from 'element-ui';
+Vue.use(Loading, DatePicker, MessageBox, Message);
 Vue.component(Select.name, Select)
 Vue.component(Option.name, Option)
 Vue.component(DatePicker.name, DatePicker)
@@ -20,6 +45,7 @@ Vue.component(Form.name, Form)
 Vue.component(FormItem.name, FormItem)
 Vue.component(Input.name, Input)
 Vue.component(Col.name, Col)
+Vue.component(Row.name, Row)
 Vue.component(Switch.name, Switch)
 Vue.component(TimePicker.name, TimePicker)
 Vue.component(CheckboxGroup.name, CheckboxGroup)
@@ -27,6 +53,9 @@ Vue.component(Checkbox.name, Checkbox)
 Vue.component(RadioGroup.name, RadioGroup)
 Vue.component(Radio.name, Radio)
 Vue.component(Tree.name, Tree)
+Vue.component(Card.name, Card)
+Vue.component(Dialog.name, Dialog)
+Vue.component(Slider.name, Slider)
 
 Vue.prototype.$loading = Loading.service
 Vue.prototype.$msgbox = MessageBox
@@ -42,7 +71,7 @@ import './validate/index.js'
 
 
 // 请求的拦截器
-import './api/index.js';
+import './api/http.js';
 
 
 //视频插件
@@ -106,7 +135,7 @@ Vue.config.productionTip = false
 //   template: '<App/>',
 //   components: { App }
 // })
-var cmVue= new Vue({
+var cmVue = new Vue({
   router,
   store,
   render: h => h(App)

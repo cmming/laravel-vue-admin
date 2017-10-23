@@ -8,7 +8,7 @@ import {
   GETUSERORIFILElIST,
   SETUSERORIFILEDETAIL,
   GETUSERORIFILEDETAIL,
-} from "./types"
+} from "../types"
 
 // 定义用户的自定义数据资源
 
