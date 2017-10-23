@@ -6,7 +6,7 @@
     </h3>
     <div class="row">
       <div class="col-lg-3">
-        <el-tree :data="menu.lists" accordion node-key="id" :props="defaultProps" :render-content="renderContent">
+        <el-tree :data="treeDemo" accordion node-key="id" :props="defaultProps1" :render-content="renderContent1">
         </el-tree>
       </div>
       <div class="col-lg-9">
@@ -473,19 +473,6 @@ export default {
           message: '请按照要求填写表单'
         });
       });
-    },
-    renderContent(h, {node, data, store}) {
-      return (
-        <span>
-          <span>
-            <span><i class={data.iconFont}></i>&nbsp;{node.label}</span>
-          </span>
-          <span class="render-content">
-            <i class="fa fa-cogs" title="添加子菜单" on-click={ () => this.setParent(data) }></i>
-            <i class="fa fa-wrench" title="修改" on-click={(e)=>this.settingResource(data)}></i>
-            <i class="fa fa-trash" title="删除" on-click={ () => this.deleteSelected(data.id) }></i>
-          </span>
-        </span>);
     },
     renderContent1(h, {node, data, store}) {
       return (

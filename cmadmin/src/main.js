@@ -31,7 +31,10 @@ import {
   MessageBox,
   Message,
   Dialog,
-  Slider
+  Slider,
+  Table,
+  TableColumn,
+  Tag
 } from 'element-ui';
 Vue.use(Loading, DatePicker, MessageBox, Message);
 Vue.component(Select.name, Select)
@@ -56,6 +59,9 @@ Vue.component(Tree.name, Tree)
 Vue.component(Card.name, Card)
 Vue.component(Dialog.name, Dialog)
 Vue.component(Slider.name, Slider)
+Vue.component(Table.name, Table)
+Vue.component(TableColumn.name, TableColumn)
+Vue.component(Tag.name, Tag)
 
 Vue.prototype.$loading = Loading.service
 Vue.prototype.$msgbox = MessageBox
@@ -65,6 +71,8 @@ Vue.prototype.$prompt = MessageBox.prompt
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
 
+// import ElementUI from 'element-ui'
+// Vue.use(ElementUI)
 
 // 表单验证自定义的指令
 import './validate/index.js'

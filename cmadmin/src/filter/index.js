@@ -61,3 +61,10 @@ Vue.filter('bytesToSize',
         return (bytes / Math.pow(k, i)).toPrecision(4) + ' ' + sizes[i];
         //toPrecision(3) 后面保留一位小数，如1.0GB                                                                                                                  //return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];  
     });
+
+
+Vue.filter('test',
+    function (bytes) {
+        return bytes+1;
+        //toPrecision(3) 后面保留一位小数，如1.0GB                                                                                                                  //return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];  
+    });

@@ -337,6 +337,11 @@ const routes = [
         component: resolve => require(['../view/menu/list.vue'], resolve)
       },
       {
+        path: '/menus/demo',
+        meta: { auth: true, title: "菜单管理升级", },
+        component: resolve => require(['../view/menu/list1.vue'], resolve)
+      },
+      {
         path: '/menu/add',
         meta: { auth: true, title: "添加菜单管理", },
         component: resolve => require(['../view/menu/form.vue'], resolve)
@@ -355,6 +360,11 @@ const routes = [
         path: '/dataCenter/dashboard',
         meta: { auth: true, title: "数据中心-仪表盘", },
         component: resolve => require(['../view/dataCenter/dashboard.vue'], resolve)
+      },
+      {
+        path: '/example/table',
+        meta: { auth: true, title: "综合实例-表格", },
+        component: resolve => require(['../view/examples/tables.vue'], resolve)
       },
 
     ]
