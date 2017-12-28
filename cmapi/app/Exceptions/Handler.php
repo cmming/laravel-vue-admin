@@ -10,7 +10,7 @@ class Handler extends ExceptionHandler
 {
     /**
      * A list of the exception types that should not be reported.
-     *
+     * 日志中不会记录的异常
      * @var array
      */
     protected $dontReport = [
@@ -27,7 +27,7 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $exception
+     * @param  \Exception $exception
      * @return void
      */
     public function report(Exception $exception)
@@ -38,20 +38,44 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Exception $exception
      * @return \Illuminate\Http\Response
+     * 方法负责将给定异常转化为发送给浏览器的 HTTP 响应
      */
     public function render($request, Exception $exception)
     {
+        // FirstOrFail 和 FindOrFail 异常处理
+        if ($exception instanceof ModelNotFoundException) {
+            // 如果删除的内容已经不存在了，就没必要报错了，直接成功处理
+            if ('DELETE' === strtoupper(Request::method())) {
+                return Response::json(['success' => true]);
+            }
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['message' => '没有找到'], 404);
+            } else {
+                return response()->view('errors.404', [], 404);
+            }
+        }
+
+        // 没有权限访问
+        if ($exception instanceof ForbiddenException) {
+            $message = $exception->getMessage() ?: '您没有权限操作';
+            $code = $exception->getCode() ?: 401;
+            $redirect = $exception->getRedirect() ?: route('error.401');
+
+            return $request->ajax() || $request->wantsJson() ? response()->json(['message' => $message],
+                $code) : response(view('errors.401', compact('code', 'message', 'redirect')), $code);
+        }
+
         return parent::render($request, $exception);
     }
 
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Auth\AuthenticationException $exception
      * @return \Illuminate\Http\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)

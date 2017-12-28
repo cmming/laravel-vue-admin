@@ -19,7 +19,9 @@ class AuthServiceProvider extends ServiceProvider
 //        'App\Model' => 'App\Policies\ModelPolicy',
 		//将定义的的策略模式注册到模型中 去
 //		'\App\Models\UserOriFiles' =>'\App\Policies\UserOriResPolicy'
-		\App\Models\UserOriFiles::class =>\App\Policies\UserOriResPolicy::class
+		\App\Models\UserOriFiles::class =>\App\Policies\UserOriResPolicy::class,
+        \App\Models\Blog\Post::class =>\App\Policies\Blog\PostPolicy::class,
+
     ];
 
     /**
@@ -35,7 +37,8 @@ class AuthServiceProvider extends ServiceProvider
 		$UserPremissions = UserPremission::all();
 		foreach($UserPremissions as $userPremission){
 			Gate::define($userPremission->name, function ($user)use($userPremission){
-				return $user->hasPremission($userPremission);
+//				return $user->hasPremission($userPremission);
+				return true;
 			});
 		}
         //

@@ -25,7 +25,34 @@ class UserController extends BaseController
 
 	//获取用户的所有信息
 	public function index(){
-		$users = $this->user->paginate();
+
+		$sear_arr = $this->noMustHas(
+			array(
+				array('limit'=>'numeric'),
+				array('btime'=>'date_format:Y-m-d'),
+				array('etime'=>'date_format:Y-m-d'),
+				array('isExcel'=>'string'),
+			)
+		);
+		//处理 搜索 参数
+		$limit = isset($sear_arr['limit'])?$sear_arr['limit']:15;
+		$btime = isset($sear_arr['btime'])?$sear_arr['btime']:'';
+		$etime =  isset($sear_arr['etime'])?$sear_arr['etime']:'';
+		$isExcel =  isset($sear_arr['isExcel'])?$sear_arr['isExcel']:'false';
+
+		$users = $this->user->where(function($query)use($btime,$etime){
+			if($etime!=''){
+				$query->where('ctime','>=',$btime.(' 00:00:00'))->where('ctime','<=',$etime.(' 23:59:59'));
+			}else{
+				$query->where('ctime','>=',$btime.(' 00:00:00'));
+			}
+		});
+		if($isExcel!='false'){
+			return $this->response->array(['data'=>$users->get()->toArray()]);
+		}else{
+			$users = $users->paginate($limit);
+		}
+//		$users = $this->user->paginate();
 
 		return $this->response->paginator($users, new UserTransformer());
 	}

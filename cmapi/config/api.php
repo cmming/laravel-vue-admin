@@ -224,6 +224,9 @@ return [
 	/**
 	 * 目录的缓存配置文件
 	 */
-	'menuConfig' =>env('USER_MENU_TMP_PATH'),
+	'menuConfig' =>env('USER_MENU_TMP_PATH',''),
+	'routerConfig' =>env('USER_ROUTER_TMP_PATH',''),
+	'ansycRouterMap' =>env('ANSYC_ROUTER_MAP_PATH',''),
+	'ansycViewMap' =>env('ANSYC_VIEW_MAP_PATH',''),
 
 ];

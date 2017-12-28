@@ -182,7 +182,9 @@ return [
         //jwt-auth 0.5.*
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         //composer require dingo/api:1.0.x@dev
-        Dingo\Api\Provider\LaravelServiceProvider::class
+        Dingo\Api\Provider\LaravelServiceProvider::class,
+        //easywechat
+        Overtrue\LaravelWechat\ServiceProvider::class,
 
     ],
 
@@ -234,7 +236,9 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         //tymon/jwt-auth 0.5.*
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
-        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class
+        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+        // easywechat
+        'EasyWeChat' => Overtrue\LaravelWeChat\Facade::class,
 
     ],
 

@@ -11,6 +11,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+Route::get('/test', function () {
+    return 'view';
 });
+
+//Route::get('/blog/posts','\App\Http\Controllers\Blog\PostController@index');
+
+//博客 的路由
+include 'blog.php';
+
+include 'wechat.php';
+

@@ -145,5 +145,41 @@ create table t_vr_user_ori_tmp (
 前端控制权限的方式只能通过后台的status_code，进行判断如果是 越权的status_code 就重定向。
 
 
+前段路由有后患配置生成
+    路由模块
+    1. router                            路由表
+        id      主键
+        title    标题
+        path    路径
+        componentPath   组件的路径
+        type            路由的类型
+        iconFont        路由的图标
+        sort            路由的顺序（用于生成目录排序）
+        
+    2. routers_rel                       路由关系表
+    3. router_premission_rel             路由权限关系表
+   
+  
+  一对多
+   
+  多对多
+  belongsToMany
+  user post    (user_id指user表的主键在关系表中对应的字段，post_id 指 post表的主键对应关系表中的字段)
+  belongsToMany(post,user_post_rel,user_id,post_id);
+  
+   
+  远层一对多
+    hasManyThrough
+    country user post   (country_id:表示user表中的country_id,user_id,post表中的user_id)
+    hasManyThrough(post,user,'country_id','user_id');
+    
+    
+  多态关联
+  morphMany
+  
+  
+    
+
+
 
 

@@ -49,7 +49,13 @@ return [
 		'jwt' => [
 			'driver'   => 'jwt',   // 结合扩展这里定义即生效
 			'provider' => 'jwts'
-		]
+		],
+        //为 blog 定义 一个provider
+        'blog' => [
+            'driver' => 'session',
+            'provider' => 'blogUser',
+        ],
+
     ],
 
     /*
@@ -83,7 +89,11 @@ return [
 		'jwts' =>[
 			'driver' => 'eloquent',
 			'model' => App\Models\User::class,
-		]
+		],
+        'blogUser' =>[
+            'driver' => 'eloquent',
+            'model' => App\Models\Blog\User::class,
+        ]
     ],
 
     /*

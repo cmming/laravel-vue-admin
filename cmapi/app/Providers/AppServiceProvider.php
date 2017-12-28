@@ -17,6 +17,13 @@ class AppServiceProvider extends ServiceProvider
         //
         //函数启动之后会执行  设置string 的默认长度 为191
         Schema::defaultStringLength(191);
+        //向 所有的view 添加 topic
+        \View::composer('blog.layout.main',function($view){
+            $topics = \App\Models\Blog\Topic::all();
+            $view->with('topics',$topics);
+        });
+
+        \Carbon\Carbon::setLocale('zh');
     }
 
     /**

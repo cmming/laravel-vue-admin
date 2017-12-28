@@ -10,9 +10,9 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Models\UserRole;
 use App\Models\UserPremission;
-use App\Transformers\userRolesTransformer;
+use App\Transformers\UserRolesTransformer;
 
-class userRolesController extends BaseController
+class UserRolesController extends BaseController
 {
 
 	protected $userRole;
@@ -25,8 +25,8 @@ class userRolesController extends BaseController
 
 	public function index(){
 		$userRoles = $this->userRole->paginate();
-
-		return $this->response->paginator($userRoles,new userRolesTransformer());
+		\Log::info($userRoles->toArray());
+		return $this->response->paginator($userRoles,new UserRolesTransformer());
 	}
 
 	public function store(){
@@ -57,7 +57,7 @@ class userRolesController extends BaseController
 
 		if($isExist){
 			// item 是返回单个数据
-			return $this->response->item($isExist, new userRolesTransformer());
+			return $this->response->item($isExist, new UserRolesTransformer());
 		}else{
 			$result=array();
 			$result['code']=201;

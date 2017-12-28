@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Models\PremissionResources;
 
-class userPremissionsResourcesController extends BaseController
+class UserPremissionsResourcesController extends BaseController
 {
 
 	protected $premissonResources;

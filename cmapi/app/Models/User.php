@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\User as Auth;
 
-class User extends Authenticatable
+class User extends Auth
 {
     protected $connection = 'mysql_vr';
     protected $table = "t_user_list";

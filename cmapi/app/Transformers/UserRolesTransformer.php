@@ -6,7 +6,7 @@ use App\Models\UserRole;
 use League\Fractal\ParamBag;
 use League\Fractal\TransformerAbstract;
 
-class userRolesTransformer extends TransformerAbstract
+class UserRolesTransformer extends TransformerAbstract
 {
 	//默认  可以包含的 资源 这里 针对的是 model 中的数据 根据不同的资源 返回不同的数据
 	protected $availableIncludes = ['premissions'];

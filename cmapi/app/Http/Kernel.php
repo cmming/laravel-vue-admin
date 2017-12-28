@@ -63,6 +63,13 @@ class Kernel extends HttpKernel
         //自己根据 jwt 创建的中间件
         'verifyToken' => 'App\Http\Middleware\VerifyToken',
         'verifyTokenAfter' => 'App\Http\Middleware\VerifyTokenAfter',
-        'userChangeMidleware'=>'App\Http\Middleware\UserChangeMidleware'
+        'userChangeMidleware'=>'App\Http\Middleware\UserChangeMidleware',
+
+
+        'blogUserChange'=>'App\Http\Middleware\BlogUserChangeMidleware',
+
+        //easyWeChat
+        'wechat.oauth' => \Overtrue\LaravelWechat\Middleware\OAuthAuthenticate::class,
+
     ];
 }

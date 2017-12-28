@@ -80,9 +80,15 @@ class AuthenticateController extends BaseController
 
         return ['msg'=>'注册成功！','code'=>200];
     }
+
 	public function refreshToken(){
 		$old_token = JWTAuth::getToken();
 		$newToken = JWTAuth::refresh($old_token);
 		return response(['刷新token'], 401)->header('Authorization', 'Bearer '.$newToken);
+	}
+
+	public function userInfo(){
+		$user = \Auth::user();
+		dd($user);
 	}
 }
