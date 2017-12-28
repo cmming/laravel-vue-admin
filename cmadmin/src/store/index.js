@@ -14,6 +14,10 @@ import userPremisison from './modules/userPremisison.js'
 import userRole from './modules/userRole.js'
 import user from './modules/user.js'
 import menu from './modules/menu.js'
+import router from './modules/router.js'
+import userInfo from './modules/userInfo.js'
+import blogTopic from './modules/blogTopic'
+import blogPost from './modules/blogPost'
 // import userInfo from './modules/userInfo.js'
 
 // 导出多个模块的数据 ->应该仅仅包含
@@ -29,7 +33,11 @@ export default new Vuex.Store({
         userPremisison,
         userRole,
         user,
-        menu
+        menu,
+        router,
+        userInfo,
+        blogTopic,
+        blogPost
     },
 
 });

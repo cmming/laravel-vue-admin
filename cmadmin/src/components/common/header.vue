@@ -17,7 +17,7 @@
                                 <li class="user-avatar">
                                     <!-- <img src="" alt="" class="img-circle"> -->
                                     <div class="user-content">
-                                        <h5 class="no-m-bottom">{{userInfo.userName}}</h5>
+                                        <h5 class="no-m-bottom">{{userInfo.userBaseInfo.uname}}</h5>
                                         <div class="m-top-xs">
                                             <!-- <a href="javascript:void(0)" class="m-right-sm">Profile</a> -->
                                             <a @click="siginOut">退出</a>
@@ -85,7 +85,7 @@
                             <a href="javascript:void(0)" id="userToggle" data-toggle="dropdown">
                                 <img src="" alt="" class="img-circle inline-block user-profile-pic">
                                 <div class="user-detail inline-block" @click="showRigthPc = !showRigthPc">
-                                    {{userInfo.userName}}
+                                    {{userInfo.userBaseInfo.uname}}
                                     <i class="fa fa-angle-down"></i>
                                 </div>
                             </a>
@@ -127,20 +127,14 @@
                 // 手机时候右边的下拉
                 showRigthPhone: false,
                 showRigthPc:false,
-                userInfo:{
-                    userName:''
-                },
             }
         },
         props: ['msg'],
         computed: mapGetters([
             'loading',
-            // 'userInfo'
+            'userInfo'
         ]),
-        mounted(){
-            // console.log(this.$store.state);
-            this.userInfo.userName=localStorage.userName;
-        },
+        
         methods: {
             showMenu: function() {
                 this.msg.phoneMenuShow = !this.msg.phoneMenuShow;

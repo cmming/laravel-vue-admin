@@ -63,7 +63,7 @@ var cbs = {
             if (response.headers.lastmodified) {
                 var lastmodified = response.headers.lastmodified;
                 if (lastmodified > localStorage.refresh_time && lastmodified < localStorage.expired_at) {
-                    axios.get(process.env.API_ROOT + "/refreshToken", {
+                    axios.get(process.env.API_ROOT + "refreshToken", {
                         headers: {
                             'Authorization': localStorage.getItem("token")
                         }

@@ -89,7 +89,7 @@
     <el-dialog title="配置用户角色" v-model="dialogVisible" size="tiny">
       <div class="select-tree">
         <el-scrollbar tag="div" class='is-empty' wrap-class="el-select-dropdown__wrap" view-class="el-select-dropdown__list">
-          <el-tree ref="tree" :data="menu.lists" show-checkbox check-strictly node-key="id" v-loading="loading" :props="defaultProps" :default-expanded-keys="userPremissions.permisisonsResources" :default-checked-keys="userPremissions.permisisonsResources">
+          <el-tree ref="tree" :data="userPremissions.allRouter" show-checkbox check-strictly node-key="id" v-loading="loading" :props="defaultProps" :default-expanded-keys="userPremissions.premissionsRouters" :default-checked-keys="userPremissions.premissionsRouters">
           </el-tree>
         </el-scrollbar>
       </div>
@@ -122,7 +122,7 @@ export default {
       chooseItem: '',
       dialogVisible: false,
       defaultProps: {
-          children: 'childMenu',
+          children: 'children',
           label: 'title',
           id: "id",
       },
@@ -132,12 +132,14 @@ export default {
   computed: mapGetters([
     'userPremissions',
     'menu',
-    'loading'
+    'loading',
+    'router'
   ]),
   created() {
     this.list();
   },
   methods: {
+    //获取所有的路由
     // 使用dispatched 发送请求
     list() {
       var resData = this.getDataFormat(this.userPremissions.searchData);
@@ -204,18 +206,20 @@ export default {
             this.$message.error('请选中一个数据,然后再进行资源配置');
         }else{
             var paramObj = { vue: this,index:this.chooseItem};
-            this.$store.dispatch('PREMISSIONRESOURCES',paramObj);
-
-            var paramObj = { vue: this};
-            this.$store.dispatch('MENULIST',paramObj);
-            this.dialogVisible = true;
+            // this.$store.dispatch('PREMISSIONRESOURCES',paramObj);
+            this.$store.dispatch('PREMISIONROUTERS',paramObj);
+            this.dialogVisible =true;
+            // this.getAllRouter();
+            // var paramObj = { vue: this};
+            // this.$store.dispatch('MENULIST',paramObj);
         }
     },
     configUserRoles(index){
         // 为一个 权限进行 资源配置
-        var addItem = {'premission_id':this.chooseItem,'resources_id':JSON.stringify(this.$refs.tree.getCheckedKeys())},
-        paramObj = { vue: this,resData:addItem};
-        this.$store.dispatch('STOREPREMISSIONRESOURCES',paramObj);
+        var addItem = {'routers_id':JSON.stringify(this.$refs.tree.getCheckedKeys())},
+        paramObj = { vue: this,'index':this.chooseItem,resData:addItem};
+        this.$store.dispatch('STOREPREMISSIONROUTER',paramObj);
+        this.dialogVisible =false;
     }
   }
 }

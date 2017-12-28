@@ -1,7 +1,8 @@
 //引入的接口文件
 import {
     userPremission,
-    premissionsResources
+    premissionsResources,
+    router
 } from "../../api/services.js"
 // 事件订阅者
 import {
@@ -10,7 +11,10 @@ import {
     UPDATEUSERPREMISSION,
     USERPREMISSIONDETAIL,
     PREMISSIONRESOURCES,
-    STOREPREMISSIONRESOURCES
+    STOREPREMISSIONRESOURCES,
+    PGETALLROUTER,
+    PREMISIONROUTERS,
+    STOREPREMISSIONROUTER
 } from "../types"
 
 
@@ -25,6 +29,8 @@ const state = {
         isUpdate: false,
         details: {},
         permisisonsResources:[],
+        premissionsRouters:[],
+        allRouter:[]
     }
 }
 
@@ -54,7 +60,13 @@ const mutations = {
         }else{
             state.userPremissions.permisisonsResources = [];
         }
-    }
+    },
+    PREMISIONROUTERS(state,data){
+        state.userPremissions.premissionsRouters = data;
+    },
+    PGETALLROUTER(state, data) {
+        state.userPremissions.allRouter = data;
+      },
 
 }
 
@@ -99,7 +111,32 @@ const actions = {
         premissionsResources.storePremissonResources(params.vue,params.resData,function(response){
 
         });
+    },
+    // 权限和路由的关系
+    PREMISIONROUTERS({ commit }, params) {
+        userPremission.routers(params.vue,params.index,function(response){
+            if(response.status == 200){
+                commit(PREMISIONROUTERS,response.data)
+                //请求获取所有的路由
+                router.all(params.vue, function(response) {
+                    if(response.status == 200){
+                      commit(PGETALLROUTER, response.data);
+                    }
+                });
+            }
+        });
+    },
+    // 保存 更新权限 的权限
+    STOREPREMISSIONROUTER({ commit }, params) {
+        userPremission.storeRouter(params.vue,params.index,params.resData,function(response){
+            if(response.status == 204){
+                //直接跳转即可
+                // params.vue.$router.push('/user/premissions');
+            }
+        });
     }
+    
+    
 }
 
 

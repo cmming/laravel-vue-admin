@@ -34,7 +34,8 @@ import {
   Slider,
   Table,
   TableColumn,
-  Tag
+  Tag,
+  Pagination
 } from 'element-ui';
 Vue.use(Loading, DatePicker, MessageBox, Message);
 Vue.component(Select.name, Select)
@@ -62,6 +63,7 @@ Vue.component(Slider.name, Slider)
 Vue.component(Table.name, Table)
 Vue.component(TableColumn.name, TableColumn)
 Vue.component(Tag.name, Tag)
+Vue.component(Pagination.name, Pagination)
 
 Vue.prototype.$loading = Loading.service
 Vue.prototype.$msgbox = MessageBox
@@ -130,6 +132,7 @@ import './assets/css/cm.css'
 
 // import './assets/dist/static/jquery'
 // import './assets/dist/webuploader'
+// import "../node_modules/github-markdown-css/github-markdown.css"
 
 
 

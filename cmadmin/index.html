@@ -11,7 +11,10 @@
     <link rel="dns-prefetch" href="https://cdn.bootcss.com/">
     <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
 
-    <script src="http://192.168.0.88/laravel/cmadmin/src/assets/dist/webuploader.js"></script>
+    <!-- <script src="http://192.168.0.88/laravel/cmadmin/src/assets/dist/webuploader.js"></script> -->
+    <script src=<%= htmlWebpackPlugin.options.path %>/static/dist/webuploader.js></script>
+    <script src=<%= htmlWebpackPlugin.options.path %>/static/tinymce/tinymce.min.js></script>
+    <!-- <script type="text/javascript" src="http://192.168.0.88/laravel/cmadmin/src/router/RouterMap/ansycRouterMap.js"></script> -->
     <!-- <script src="./cdn/dist/webuploader.js"></script> -->
     <title>蓝光vr管理后台</title>
   </head>

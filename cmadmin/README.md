@@ -30,3 +30,22 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 3.页面的首页添加一排历史记录快速入口 （就是一个历史记录的组件）
 
 4.为了将项目 精简，必须将 menu组件中的那个 json 和路由json 进行整合，只有这样避免要控制两个数据
+
+5.为了让actions 实现同步操作，可以使用 Promise
+
+	`
+		//控制异步代码的函数
+		eg: return new Promise((resolve,reject) =>{
+				//异步操作
+				function a(){}
+				//异步操作 成功后执行的
+				resolve();
+				//异步操作 执行失败后
+				reject();
+			});
+	`
+
+
+6.为域名进行 自动登录的判断
+
+

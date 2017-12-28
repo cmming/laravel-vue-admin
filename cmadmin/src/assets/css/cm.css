@@ -199,3 +199,12 @@ select.styled-select {
         border: 1px solid #dfdfdf;
     }
 }
+.fr{
+    float: right !important;
+}
+.fl{
+    float: left !important;
+}
+.over-flow-auto{
+    overflow: auto!important;
+}

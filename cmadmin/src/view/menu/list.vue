@@ -6,7 +6,7 @@
     </h3>
     <div class="row">
       <div class="col-lg-3">
-        <el-tree :data="menu.lists" accordion node-key="id" :props="defaultProps" :render-content="renderContent">
+        <el-tree :data="router.allRouter" accordion node-key="id" :props="defaultProps1" :render-content="renderContent1">
         </el-tree>
       </div>
       <div class="col-lg-9">
@@ -17,17 +17,17 @@
 
               <label class="control-label col-lg-2">父集：</label>
               <div :class="{'col-lg-6': true}">
-              <!-- <el-select-tree style="width:100%" v-model="menu.details.parent_title" :treeData="menu.lists" :propNames="defaultProps" clearable
+              <!-- <el-select-tree style="width:100%" v-model="router.details.parent_title" :treeData="treeDemo1" :propNames="defaultProps2" clearable @change="handleTreeNodeClick"
                                 placeholder="请选择父级">
                 </el-select-tree> -->
-                <input autocomplete="off" type="text" class="form-control input-sm" placeholder="标题" name="parent_title" v-model="menu.details.parent_title" disabled="true">
+                <input autocomplete="off" type="text" class="form-control input-sm" placeholder="标题" name="parent_title" v-model="router.details.parent_title" disabled="true">
               </div>
               <!-- /.col -->
             </div>
             <div class="form-group">
               <label class="control-label col-lg-2">标题：</label>
               <div :class="{'col-lg-6': true, 'has-error': (errors.has('title:required'))}">
-                <input autocomplete="off" v-validate="'required'" type="text" class="form-control input-sm" placeholder="标题" name="title" v-model="menu.details.title">
+                <input autocomplete="off" v-validate="'required'" type="text" class="form-control input-sm" placeholder="标题" name="title" v-model="router.details.title">
                 <v-errorMsg :errorMsgAlert="{'isShow':errors.has('title'),'msg':[{'isShow':errors.has('title:required'),'msg':errors.first('title:required')}]}">
                 </v-errorMsg>
               </div>
@@ -37,7 +37,7 @@
             <div class="form-group">
               <label class="control-label col-lg-2">图标:</label>
               <div :class="{'col-lg-6': true, 'has-error': (errors.has('title:required'))}">
-                <i :class="menu.details.iconFont" v-model="menu.details.iconFont"></i>
+                <i :class="router.details.iconFont" v-model="router.details.iconFont"></i>
                 <button class="btn btn-primary" @click="selectIconDialog=true">选中</button>
               </div>
               <!-- /.col -->
@@ -46,9 +46,9 @@
             <div class="form-group">
               <label class="control-label col-lg-2">类型：</label>
               <div :class="{'col-lg-6': true}">
-                <div class="radio inline-block" v-for = "(routeType,key) in menu.typeArr">
+                <div class="radio inline-block" v-for = "(routeType,key) in router.typeArr">
                     <div class="custom-radio m-right-xs">
-                        <input type="radio" :id="key" name="type" :value="key" v-model="menu.details.type">
+                        <input type="radio" :id="key" name="type" :value="key" v-model="router.details.type">
                         <label :for="key"></label>
                     </div>
                     <div class="inline-block vertical-top">{{routeType}}</div>
@@ -60,7 +60,7 @@
             <div class="form-group">
               <label class="control-label col-lg-2">排序：</label>
               <div :class="{'col-lg-6': true}">
-                <el-slider v-model="menu.details.sort"></el-slider>
+                <el-slider v-model="router.details.sort"></el-slider>
               </div>
               <!-- /.col -->
             </div>
@@ -68,7 +68,7 @@
             <div class="form-group">
               <label class="control-label col-lg-2">路径：</label>
               <div :class="{'col-lg-6': true, 'has-error': (errors.has('path:required'))}">
-                <input autocomplete="off" v-validate="'required'" type="text" class="form-control input-sm" placeholder="路径" name="path" v-model="menu.details.path">
+                <input autocomplete="off" v-validate="'required'" type="text" class="form-control input-sm" placeholder="路径" name="path" v-model="router.details.path">
                 <v-errorMsg :errorMsgAlert="{'isShow':errors.has('path'),'msg':[{'isShow':errors.has('path:required'),'msg':errors.first('path:required')}]}">
                 </v-errorMsg>
               </div>
@@ -78,7 +78,7 @@
             <div class="form-group">
               <label class="control-label col-lg-2">页面路径：</label>
               <div :class="{'col-lg-6': true, 'has-error': (errors.has('componentPath:required'))}">
-                <input autocomplete="off" v-validate="'required'" type="text" class="form-control input-sm" placeholder="路径" name="componentPath" v-model="menu.details.componentPath">
+                <input autocomplete="off" v-validate="'required'" type="text" class="form-control input-sm" placeholder="路径" name="componentPath" v-model="router.details.componentPath">
                 <v-errorMsg :errorMsgAlert="{'isShow':errors.has('componentPath'),'msg':[{'isShow':errors.has('componentPath:required'),'msg':errors.first('componentPath:required')}]}">
                 </v-errorMsg>
               </div>
@@ -136,289 +136,77 @@ export default {
       },
       status:'',
       selectIconDialog:false,
-       treeDemo: [
-        // 文件相关的路由
-        {
-          id:'0',
-          path: '/files',
-          type: 'menu',
-          iconFont: 'fa fa-file',
-          title: "文件",
-          meta: { auth: true, title: "文件", role: [], dropDown: true },
-          // component: resolve => require(['../view/mainIndex.vue'], resolve),
-          children: [{
-              id:'0,0',
-              path: '/files/add',
-              type: 'menu',
-              title: "上传文件",
-              meta: { auth: true, title: "上传文件", },
-              // component: resolve => require(['../view/uploadFile.vue'], resolve)
-            },
-            {
-              id:'0,1',
-              path: '/userOriFiles',
-              type: 'menu',
-              title: "用户原创文件列表",
-              meta: { auth: true, title: "用户原创文件列表", },
-              // component: resolve => require(['../view/userOriFiles.vue'], resolve)
-            },
-            {
-              id:'0,2',
-              path: '/UserOriFiles/add',
-              type: 'function',
-              title: "添加用户原创资源",
-              meta: { auth: true, title: "添加用户原创资源", },
-              // component: resolve => require(['../view/UserOriTmpsForm.vue'], resolve)
-            },
-            {
-              id:'0,3',
-              path: '/UserOriFiles/edit/:id',
-              type: 'function',
-              title: "修改用户原创",
-              meta: { auth: true, title: "修改用户原创", },
-              // component: resolve => require(['../view/userOriFileForm.vue'], resolve)
-            },
-            {
-              id:'0,4',
-              path: '/UserOriFiles/add/:id',
-              type: 'function',
-              title: "添加原创申请",
-              meta: { auth: true, title: "添加原创申请", },
-              // component: resolve => require(['../view/UserOriTmpsForm.vue'], resolve)
-            },
-            {
-              id:'0,5',
-              path: '/UserOriTmps',
-              type: 'menu',
-               title: "用户原创列表",
-              meta: { auth: true, title: "用户原创列表", },
-              // component: resolve => require(['../view/UserOriTmps.vue'], resolve)
-            },
-            {
-              id:'0,6',
-              path: '/UserOriTmps/edit/:id',
-              type: 'function',
-               title: "修改用户原创申请",
-              meta: { auth: true, title: "修改用户原创申请", },
-              // component: resolve => require(['../view/UserOriTmpsForm.vue'], resolve)
-            },
-          ]
-        },
-        // 权限相关的路由
-        {
-          id:'1',
-          path: '/users',
-          type: 'menu',
-          iconFont: 'fa fa-cogs',
-          title: "用户权限",
-          meta: { auth: true, title: "用户权限", role: [], dropDown: true },
-          // component: resolve => require(['../view/mainIndex.vue'], resolve),
-          children: [{
-              id:'1,0',
-              type: 'menu',
-              path: '/user/premissions',
-              title: "用户权限列表",
-              meta: { auth: true, title: "用户权限列表", },
-              // component: resolve => require(['../view/userPremission/list.vue'], resolve)
-            },
-            {
-              id:'1,1',
-              type: 'function',
-              path: '/user/premissions/edit/:id',
-              title: "修改用户权限", 
-              meta: { auth: true, title: "修改用户权限", },
-              // component: resolve => require(['../view/userPremission/form.vue'], resolve)
-            },
-            {
-              id:'1,2',
-              type: 'function',
-              path: '/user/premissions/add',
-               title: "添加用户权限", 
-              meta: { auth: true, title: "添加用户权限", },
-              // component: resolve => require(['../view/userPremission/form.vue'], resolve)
-            },
-            // 用户角色管理
-            {
-              id:'1,3',
-              type: 'menu',
-              path: '/user/roles',
-               title: "用户角色列表",
-              meta: { auth: true, title: "用户角色列表", },
-              // component: resolve => require(['../view/userRole/list.vue'], resolve)
-            },
-            {
-              id:'1,4',
-              type: 'function',
-              path: '/user/roles/edit/:id',
-              title: "修改用户角色",
-              meta: { auth: true, title: "修改用户角色", },
-              // component: resolve => require(['../view/userRole/form.vue'], resolve)
-            },
-            {
-              id:'1,5',
-              type: 'function',
-              path: '/user/roles/add',
-              title: "添加用户角色",
-              meta: { auth: true, title: "添加用户角色", },
-              // component: resolve => require(['../view/userRole/form.vue'], resolve)
-            },
-            {
-              id:'1,6',
-              type: 'function',
-              path: '/user/roles/:id/premission',
-               title: "角色权限管理", 
-              meta: { auth: true, title: "角色权限管理", },
-              // component: resolve => require(['../view/userRole/rolePremission.vue'], resolve)
-            },
-            {
-              id:'1,7',
-              type: 'menu',
-              path: '/users',
-               title: "用户列表", 
-              meta: { auth: true, title: "用户列表", },
-              // component: resolve => require(['../view/user/list.vue'], resolve)
-            },
-            {
-              id:'1,8',
-              path: '/user/:id/roles',
-              title: "用户角色管理",
-              meta: { auth: true, title: "用户角色管理", },
-              // component: resolve => require(['../view/user/roles.vue'], resolve)
-            },
-            {
-              id:'1,9',
-              type: 'menu',
-              path: '/menus',
-               title: "菜单管理",
-              meta: { auth: true, title: "菜单管理", },
-              // component: resolve => require(['../view/menu/list.vue'], resolve)
-            },
-            {
-              id:'1,10',
-              type: 'function',
-              path: '/menu/add',
-              title: "添加菜单管理", 
-              meta: { auth: true, title: "添加菜单管理", },
-              // component: resolve => require(['../view/menu/form.vue'], resolve)
-            },
-            {
-              id:'1,11',
-              type: 'function',
-              path: '/menu/edit/:id',
-               title: "添加菜单管理",
-              meta: { auth: true, title: "添加菜单管理", },
-              // component: resolve => require(['../view/menu/form.vue'], resolve)
-            },
-            {
-              id:'1,12',
-              type: 'function',
-              path: '/user/premissions/menus',
-               title: "权限菜单管理",
-              meta: { auth: true, title: "权限菜单管理", },
-              // component: resolve => require(['../view/menu/form.vue'], resolve)
-            },
-            {
-              id:'1,13',
-              type: 'function',
-              path: '/dataCenter/dashboard',
-               title: "数据中心-仪表盘",
-              meta: { auth: true, title: "数据中心-仪表盘", },
-              // component: resolve => require(['../view/dataCenter/dashboard.vue'], resolve)
-            },
-          ]
-        },
-        // 数据中心
-        {
-          id:'2',
-          path: '/dataCenter',
-          type: 'menu',
-          iconFont: 'fa fa-area-chart',
-           title: "数据中心",
-          meta: { auth: true, title: "数据中心", role: [], dropDown: true },
-          // component: resolve => require(['../view/mainIndex.vue'], resolve),
-          children: [{
-            id:'2,0',
-            type: 'menu',
-            path: 'dashboard',
-            title: "数据中心-仪表盘", 
-            meta: { auth: true, title: "数据中心-仪表盘", },
-            // component: resolve => require(['../view/dataCenter/dashboard.vue'], resolve)
-          }, ]
-        }
-      ],
       defaultProps1: {
         children: 'children',
         label: 'meta'
       },
+      defaultProps2: {
+        children: 'children',
+        label: 'title'
+      },
     };
   },
   // 监视 menu.details.parent_title
-  watch:{
-    menu:{
-      handler(newValue, oldValue) {
-        console.log(newValue);
-        if(newValue.parent_title==''){
-          this.menu.details.parent_id=''
-        }
-　　　},
-　　　deep: true
-    }
-  },
+//   watch:{
+//     menu:{
+//       handler(newValue, oldValue) {
+//         console.log(newValue);
+//         if(newValue.parent_title==''){
+//           this.menu.details.parent_id=''
+//         }
+// 　　　},
+// 　　　deep: true
+//     }
+//   },
   computed: mapGetters([
-      'menu'
+      'router'
   ]),
   created() {
     var paramObj = { vue: this};
-    this.$store.dispatch('MENULIST',paramObj);
+    this.$store.dispatch('GETALLROUTER',paramObj);
   },
   methods: {
     selectIcon(event){
-        this.menu.details.iconFont = event.target.className;
+        this.router.details.iconFont = event.target.className;
         this.selectIconDialog = false;
       },
     newAdd(){
       this.status = 'addTopItem';
-      this.menu.details.iconFont = '';
-      this.menu.details.parent_title = '';
-      this.menu.details.parent_id = '';
-      this.menu.details.id = '';
-      this.menu.details.title = '';
-      this.menu.details.path = '';
-      this.menu.details.childMenu = [];
+      this.router.details.parent_title = '';
+      this.router.details.parent_id = '';
     },
     setParent(data){
-      if(data.id.indexOf(',')!=-1){
+      if(data.parent_id!=undefined){
         this.$message.error('不能为该目录添加子目录！');
       }else{
-        this.menu.details.parent_title = data.title;
-        this.menu.details.parent_id = data.id;
+        this.router.details.parent_title = data.title;
+        this.router.details.parent_id = data.id;
 
-        this.menu.details.id = '';
-        this.menu.details.title = '';
-        this.menu.details.path = '';
-        this.menu.details.childMenu = '';
+        this.router.details.id = '';
+        this.router.details.title = '';
+        this.router.details.path = '';
+        this.router.details.childMenu = '';
 
-      this.status = 'addItem';
+        this.status = 'addItem';
       }
       
     },
     // 修改
     settingResource(data){
       this.status = 'edit';
-      console.log(data);
-      var dataIndex = data.id.split(',');
-      console.log(data,dataIndex.length);
-      if(dataIndex.length>1){
-        console.log(this.menu.indexMenu[dataIndex[0]]);
-        this.menu.details.parent_title = this.menu.indexMenu[dataIndex[0]].title;
-        this.menu.details.parent_id = this.menu.indexMenu[dataIndex[0]].id;
-        this.menu.details.type = this.menu.indexMenu[dataIndex[0]].type;
+      if(data.parent_id){
+      // 判断是否为 一级 菜单  显示父集菜单
+        this.router.details.parent_title = data.parent_id;
+        this.router.details.parent_id = data.parent_id;
+      }else{
+        this.router.details.parent_title = '';
       }
-      this.menu.details.title = data.title;
-      this.menu.details.path = data.path;
-      this.menu.details.id = data.id;
-      this.menu.details.iconFont = data.iconFont;
-      this.menu.details.type = data.type;
+      this.router.details.title = data.title;
+      this.router.details.path = data.path;
+      this.router.details.id = data.id;
+      this.router.details.iconFont = data.iconFont;
+      this.router.details.type = data.type;
+      this.router.details.componentPath = data.componentPath;
     },
     // 删除选中项
     deleteSelected(data){
@@ -442,17 +230,16 @@ export default {
       this.$validator.validateAll().then((result) => {
         if (result) {
           if(this.status == 'edit'){
-            var addItem = {iconFont:this.menu.details.iconFont,title:this.menu.details.title,path:this.menu.details.path,id:this.menu.details.id,childMenu:JSON.stringify([])};
-            var paramObj = { vue: this,resData:addItem};
-            this.$store.dispatch('UPDATEMENUITEM',paramObj);
+            var paramObj = { vue: this,resData:this.router.details};
+            this.$store.dispatch('UPDATEROUTER',paramObj);
           }else if(this.status == 'addItem'){
-            var addItem = {parent_id:this.menu.details.parent_id,title:this.menu.details.title,path:this.menu.details.path,childMenu:JSON.stringify([])};
-            var paramObj = { vue: this,resData:addItem};
-            this.$store.dispatch('STOREMENUITEM',paramObj);
+            // 添加一个 二级路由
+            var paramObj = { vue: this,resData:this.router.details};
+            this.$store.dispatch('ADDROUTER',paramObj);
           }else if(this.status == 'addTopItem'){
-            var addItem = {iconFont:this.menu.details.iconFont,title:this.menu.details.title,path:this.menu.details.path,childMenu:JSON.stringify([])};
-            var paramObj = { vue: this,resData:addItem};
-            this.$store.dispatch('STOREMENUITEM',paramObj);
+            // 添加一个一级路由
+            var paramObj = { vue: this,resData:this.router.details};
+            this.$store.dispatch('ADDROUTER',paramObj);
           }
           else{
             var addItem = {title:this.menu.details.title,path:this.menu.details.path,id:this.menu.details.id,childMenu:[]};
@@ -474,19 +261,6 @@ export default {
         });
       });
     },
-    renderContent(h, {node, data, store}) {
-      return (
-        <span>
-          <span>
-            <span><i class={data.iconFont}></i>&nbsp;{node.label}</span>
-          </span>
-          <span class="render-content">
-            <i class="fa fa-cogs" title="添加子菜单" on-click={ () => this.setParent(data) }></i>
-            <i class="fa fa-wrench" title="修改" on-click={(e)=>this.settingResource(data)}></i>
-            <i class="fa fa-trash" title="删除" on-click={ () => this.deleteSelected(data.id) }></i>
-          </span>
-        </span>);
-    },
     renderContent1(h, {node, data, store}) {
       return (
         <span>
@@ -500,7 +274,12 @@ export default {
           </span>
         </span>);
     },
+    //获取点击的 路由的 id
+    handleTreeNodeClick(data){
+      console.log(data);
+    }
   },
+
   
 
 };

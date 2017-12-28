@@ -2,7 +2,7 @@
     <div class="sign-in-wrapper">
         <div class="sign-in-inner">
             <div class="login-brand text-center">
-                蓝光vr <strong class="text-skin">管理后台</strong>
+                综合 <strong class="text-skin">管理后台</strong>
             </div>
             <form v-model="formData">
                 <div class="form-group m-bottom-md col-lg-12" :class="{'has-error': (errors.has('userTel:required')|errors.has('userName:userName'))}">

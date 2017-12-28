@@ -37,4 +37,6 @@ instance.interceptors.response.use(
 
 Vue.use(VueAxios, instance)
 
+export default instance
+
 

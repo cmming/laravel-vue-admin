@@ -23,14 +23,14 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8098,
+    port: 8197,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
         target: 'http://192.168.0.88/laravel/cmapi/public/api/',
-        // target: 'http://test.17huang.com/api/',
+        // target: "http://chenming.club/api/",
         changeOrigin: true,
         pathRewrite: {
           '^/api': '',
